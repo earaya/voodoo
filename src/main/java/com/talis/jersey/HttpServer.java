@@ -16,11 +16,12 @@
 
 package com.talis.jersey;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.spdy.http.HTTPSPDYServerConnector;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,33 +36,56 @@ public class HttpServer {
 	
 	private Server server;
 
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public void start(int port, final Injector injector) throws Exception{
-		LOG.info("Starting http server on port {}", port);
-		server = new Server();
-        Connector connector = new SelectChannelConnector();
-        connector.setPort(port);
+    private void start(SslContextFactory sslContextFactory, int port, final Injector injector) throws Exception {
+        LOG.info("Starting http server on port {}", port);
+        server = new Server();
+
+        Connector connector = getConnector(sslContextFactory, port);
         server.setConnectors(new Connector[]{connector});
-        
-        Context metrics = new Context(server, "/metrics");
+
+        ServletContextHandler metrics = new ServletContextHandler(server, "/metrics");
         metrics.addServlet(MetricsServlet.class, "/*");
-        
-        Context context = new Context(server, "/");
+
+        ServletContextHandler context = new ServletContextHandler(server, "/");
         context.addServlet(DefaultServlet.class, "/");
-        context.addFilter(GuiceFilter.class, "/*", 0);
+        context.addFilter(GuiceFilter.class, "/*", null);
         context.addEventListener(new GuiceServletContextListener() {
-        	@Override
+            @Override
             protected Injector getInjector() {
-        		return injector;
+                return injector;
             }
         });
         try {
-			server.start();
-		} catch (Exception e) {
-			LOG.error("Error starting HTTP Server" , e);
-			throw new Exception("Unable to start HTTP Server", e);
-		}
+            server.start();
+        } catch (Exception e) {
+            LOG.error("Error starting HTTP Server" , e);
+            throw new Exception("Unable to start HTTP Server", e);
+        }
+    }
+
+    private Connector getConnector(SslContextFactory sslContextFactory, int port) {
+        Connector connector;
+        if(null != sslContextFactory) {
+             connector = new HTTPSPDYServerConnector(sslContextFactory);
+        } else {
+            connector = new HTTPSPDYServerConnector();
+        }
+        connector.setPort(port);
+        return connector;
+    }
+
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+	public void start(int port, final Injector injector) throws Exception{
+        start(null, port, injector);
 	}
+
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+    public void start(String keyStorePath, String keyStorePassword, int port, final Injector injector) throws Exception {
+        SslContextFactory sslContextFactory = new SslContextFactory(keyStorePath);
+        sslContextFactory.setKeyStorePassword(keyStorePassword);
+        sslContextFactory.setProtocol("TLSv1");
+        start(sslContextFactory, port, injector);
+    }
 
 	public boolean isRunning() {
 		if (server != null) {
