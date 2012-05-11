@@ -1,6 +1,6 @@
 package com.talis.jersey.config;
 
-public class SimpleConfig {
+public class FlatConfig {
 
     public String aString;
     public int anInt;
