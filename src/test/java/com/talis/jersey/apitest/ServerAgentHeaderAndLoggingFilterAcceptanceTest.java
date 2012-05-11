@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import com.talis.jersey.config.HttpServerConfig;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -48,7 +49,6 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
 	int httpPort;
 	HttpServer embeddedServer;
 	HttpClient httpClient = new DefaultHttpClient();
-	Injector injector;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -57,9 +57,8 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
 		Module[] modules = {new JerseyServletModule("com.talis.jersey.apitest"), 
 							new NoopAuthenticationModule(),
 							new GenericServerInfoModule()};
-		injector = Guice.createInjector(modules);
-		embeddedServer = new HttpServer();
-		embeddedServer.start(httpPort, injector);
+		embeddedServer = new HttpServer(new HttpServerConfig(httpPort));
+		embeddedServer.start(modules);
 	}
 		
 	@After

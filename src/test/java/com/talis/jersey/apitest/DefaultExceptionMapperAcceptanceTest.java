@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 
+import com.talis.jersey.config.HttpServerConfig;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -48,7 +49,6 @@ public class DefaultExceptionMapperAcceptanceTest {
 	int httpPort;
 	HttpServer embeddedServer;
 	HttpClient httpClient = new DefaultHttpClient();
-	Injector injector;
 
 	@Before
 	public void setUp() throws Exception {
@@ -56,9 +56,8 @@ public class DefaultExceptionMapperAcceptanceTest {
 		Module[] modules = {new JerseyServletModule("com.talis.jersey.apitest"), 
 							new NoopAuthenticationModule(),
 							new GenericServerInfoModule()};
-		injector = Guice.createInjector(modules);
-		embeddedServer = new HttpServer();
-		embeddedServer.start(httpPort, injector);
+		embeddedServer = new HttpServer(new HttpServerConfig(httpPort));
+		embeddedServer.start(modules);
 	}
 		
 	@After

@@ -10,21 +10,21 @@ import java.net.URISyntaxException;
 public class ConfigFactoryTest {
 
     @Test
-    public void simpleConfigTest() throws URISyntaxException, IOException {
-        ConfigFactory<SimpleConfig> simpleConfigConfigFactory = ConfigFactory.forClass(SimpleConfig.class);
-        URI fileUri = SimpleConfig.class.getResource("simple.conf.json").toURI();
+    public void flatConfigTest() throws URISyntaxException, IOException {
+        ConfigFactory<FlatConfig> flatConfigConfigFactory = ConfigFactory.forClass(FlatConfig.class);
+        URI fileUri = FlatConfig.class.getResource("flat.conf.json").toURI();
         File file = new File(fileUri);
-        SimpleConfig simpleConfig = simpleConfigConfigFactory.buildConfig(file);
+        FlatConfig flatConfig = flatConfigConfigFactory.buildConfig(file);
 
-        assert(simpleConfig != null);
-        assert(simpleConfig.aString.equals("someString"));
-        assert(simpleConfig.anInt == 3);
+        assert(flatConfig != null);
+        assert(flatConfig.aString.equals("someString"));
+        assert(flatConfig.anInt == 3);
     }
 
     @Test
     public void nestedConfigTest() throws URISyntaxException, IOException {
         ConfigFactory<NestedConfig> nestedConfigConfigFactory = ConfigFactory.forClass(NestedConfig.class);
-        URI fileUri = SimpleConfig.class.getResource("nested.conf.json").toURI();
+        URI fileUri = FlatConfig.class.getResource("nested.conf.json").toURI();
         File file = new File(fileUri);
         NestedConfig nestedConfig = nestedConfigConfigFactory.buildConfig(file);
 
@@ -32,5 +32,19 @@ public class ConfigFactoryTest {
         assert(nestedConfig.childConfig != null);
         assert(nestedConfig.childConfig.anInt == 4);
         assert(nestedConfig.aString.equals("aString"));
+    }
+
+    @Test
+    public void flatConfigWithConstructorsTest() throws URISyntaxException, IOException {
+        ConfigFactory<FlatConfigWithConstructors> flatConfigWithConstructorsConfigFactory =
+                ConfigFactory.forClass(FlatConfigWithConstructors.class);
+        URI fileUri = FlatConfigWithConstructors.class.getResource("flat.conf.json").toURI();
+        File file = new File(fileUri);
+        FlatConfigWithConstructors flatConfigWithConstructors =
+                flatConfigWithConstructorsConfigFactory.buildConfig(file);
+
+        assert(flatConfigWithConstructors != null);
+        assert(flatConfigWithConstructors.aString.equals("someString"));
+        assert(flatConfigWithConstructors.anInt == 3);
     }
 }
