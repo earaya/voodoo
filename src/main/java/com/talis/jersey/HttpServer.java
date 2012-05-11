@@ -36,7 +36,7 @@ public class HttpServer {
 	
 	private Server server;
 
-    private void start(SslContextFactory sslContextFactory, int port, final Injector injector) throws Exception {
+    private void start(SslContextFactory sslContextFactory, int port, final Injector injector) {
         LOG.info("Starting http server on port {}", port);
         server = new Server();
 
@@ -59,7 +59,7 @@ public class HttpServer {
             server.start();
         } catch (Exception e) {
             LOG.error("Error starting HTTP Server" , e);
-            throw new Exception("Unable to start HTTP Server", e);
+            throw new RuntimeException("Unable to start HTTP Server", e);
         }
     }
 
