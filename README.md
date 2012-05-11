@@ -96,7 +96,7 @@ desired String from a system property ( com.talis.jersey.guice.serverid )
 
 The main article of interest here is JerseyServletModule. This takes a varargs of
 the package names which contain your Jersey resources and configures Jersey to 
-use Guice for dependnency injection. It's also a bit opinionated, and configures
+use Guice for dependency injection. It's also a bit opinionated, and configures
 the application with a standard set of filters and providers. The filters it adds
 are the three custom filters mentioned above, plus Jersey's GZIPEncodingFilter which
 provides conditional (de|en)coding of request and response entities based on the 
