@@ -23,7 +23,7 @@ public class HttpServerConfig {
      * Mostly used for serialization by {@link ConfigFactory} when reading values from a file.
      */
     public HttpServerConfig() {
-        // Used by ConfigFactory when reading values from file.
+        // Used by ConfigFactory when reading values from file. Defaults port to 8080.
     }
 
     public HttpServerConfig(int port) {
