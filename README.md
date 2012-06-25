@@ -1,25 +1,26 @@
 This library bundles up some utility classes and extracts common behaviours
-from a number of Java applications. Chances are it may not be suitable for
-your applications, but its stuff that we found is often repeated when we
-use Java to built lightweight services with simple HTTP interfaces.
+from a number of Java applications. This is just stuff that is often repeated when building
+lightweight services with simple HTTP interfaces.
 
-Its basically some glue code pulling together some great libraries in 
-very much the same mould as [Dropwizard](https://github.com/codahale/dropwizard). These include:
+Jersey-Common is basically some glue code pulling together some great libraries in 
+very much the same mould as [Dropwizard](https://github.com/codahale/dropwizard). 
+These libraries include:
 
-* Jetty for its HTTP server
-* Jersey JAX-RS implementation  
-* Jackson for JSON wrangling
-* Guice dependency injection
-* slf4j logging api
-* metrics for, err, metrics
+* Jetty's HTTP server
+* Jersey's JAX-RS implementation  
+* Jackson's JSON processor
+* Google's Guice
+* slf4j's logging API
+* Yammer's metrics
 
 Main Classes/Packages of note
 =============================
 
-### HttpServer 
+### HttpServer and HttpServerConfig
 
 Encapsulates the configuration and lifecycle of a HTTP server which is
-initialised with two servlet contexts. 
+initialized with two servlet contexts:
+
 The metrics context serves MetricsServlet straight from Yammer's excellent
 metrics-servlet project. Should you choose to use the various metrics-XXX 
 libraries to instrument your application any meters, gauges, timers etc that 
@@ -33,6 +34,19 @@ with JerseyServletModule (see below), you can specify the packages containing
 your Jersey resources, which will then be served up under the root context.
 See the examples below for how to plug all this together.
 
+It's important to note that the HttpServer is hard-coded to use a [SPDY](http://www.chromium.org/spdy/spdy-whitepaper) 
+connector since it'll degrade to HTTP if the client does not support SPDY. This, however, means that
+Jersey-Common requires Java 7.
+
+### JsonConfigReader
+
+Read a JSON file and maps it to an arbitrary class. When used in conjunction with `HttpServerConfig`
+this class allows you to read the settings for your HttpServer (in particular the port and SSL settings)
+in a JSON file.
+
+<!--- This could be extended to watch for changes to the config file and restart the server. 
+We could also allow an admin interface to change these values and then persist them to disk --->
+
 ### ObjectMapperProvider
 
 Does a tiny amount of opinionated configuration to ensure that JSON output 
@@ -42,7 +56,7 @@ be turned off by disabling the default filters in JerseyServletModule.
 ### Exceptions
 
 Nothing too exciting or earth-shattering here, just some typed exceptions which
-represent particular HTTP responses. The all extend HttpException, which itself
+represent particular HTTP responses. All the provided exceptions extend HttpException, which itself
 is a RuntimeException. When used in conjunction with DefaultExceptionMapper 
 (again, this is on by default, but can be disabled via JerseyServletModule), 
 the @GET/@POST/etc methods in your Jersey resources can throw these exceptions,
@@ -108,8 +122,8 @@ com.talis.jersey.guice.disable-default-filters to "true".
      
 Also in this package are a couple of modules which bind the authentication & server
 identifier implementations to defaults. So that if you don't care about these too
-much, include these modules. 
-     
+much, include these modules.
+    
 Examples
 ========
 
@@ -117,18 +131,31 @@ Examples
 
 ```java
 public static void main(String[] args) throws Exception {
-  int httpPort = 8080;
   System.setProperty("com.talis.jersey.guice.serverid", "AnExample");
-  Injector injector = Guice.createInjector(
+  Module[] modules =
+  	{
                              new ApplicationModule(),                     // contains app specific bindings
                              new NoopAuthenticationModule(),              // we don't need no stinking authentication
                              new GenericServerInfoModule(),               // to set the Server response header 
                              new JerseyServletModule("com.example.foo",   // packages containing  
                                                      "com.example.bar")); // your JAX-RS resources
-			 
-  HttpServer webserver = new HttpServer();
-  webserver.start(httpPort, injector);    
+	};
+  HttpServer webserver = new HttpServer(new HttpServerConfig(8080));
+  webserver.start(modules);    
 }
+```
+
+### Reading a JSON config file
+
+```java
+
+public void readConfigSample() {
+	ConfigFactory sampleConfigFactory = ConfigFactory.forClass(SampleConfig.class);
+	SampleConfig config = sampleConfigFactory.buildConfig(new File("path/to/file"));
+	
+	int someValue = config.getSomeValue();
+}
+
 ```
 
 ### Log4j Appender config that includes request id token
@@ -140,20 +167,4 @@ public static void main(String[] args) throws Exception {
 </appender>
 
 The ```%X{R_UID}``` is replaced with the value of the request id pulled from the MDC at runtime
-
-Maven
-=====
-
-```xml
-<repository>  
-  <id>talis-public-repo</id>
-  <url>http://oss.talisplatform.com/content/groups/public/</url>
-</repository>
-
-<dependency>
-  <groupId>com.talis</groupId>
-  <artifactId>jersey-common</artifactId>
-  <version>1.5</version>
-</dependency> 
-```
 
