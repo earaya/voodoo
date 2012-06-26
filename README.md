@@ -1,8 +1,4 @@
-This library bundles up some utility classes and extracts common behaviours
-from a number of Java applications. This is just stuff that is often repeated when building
-lightweight services with simple HTTP interfaces.
-
-Jersey-Common is basically some glue code pulling together some great libraries in 
+Jersey-Common is basically some glue code pulling together some great libraries in
 very much the same mould as [Dropwizard](https://github.com/codahale/dropwizard). 
 These libraries include:
 
@@ -40,7 +36,7 @@ Jersey-Common requires Java 7.
 
 ### JsonConfigReader
 
-Read a JSON file and maps it to an arbitrary class. When used in conjunction with `HttpServerConfig`
+Reads a JSON file and maps it to an arbitrary class. When used in conjunction with `HttpServerConfig`
 this class allows you to read the settings for your HttpServer (in particular the port and SSL settings)
 in a JSON file.
 
@@ -160,11 +156,15 @@ public void readConfigSample() {
 
 ### Log4j Appender config that includes request id token
 
-<appender name="stdout" class="org.apache.log4j.ConsoleAppender"> 
+'''xml
+
+<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
   <layout class="org.apache.log4j.PatternLayout"> 
     <param name="ConversionPattern" value="%d{ISO8601} -%5p %-25c{1} :%t: %X{R_UID}|%m%n"/>
   </layout>
 </appender>
+
+'''
 
 The ```%X{R_UID}``` is replaced with the value of the request id pulled from the MDC at runtime
 
