@@ -25,6 +25,7 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.spdy.http.HTTPSPDYServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.omg.CORBA.portable.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ public class HttpServer {
             server.start();
         } catch (Exception e) {
             LOG.error("Error starting HTTP Server" , e);
-            throw new Exception("Unable to start HTTP Server", e);
+            throw e;
         }
     }
 

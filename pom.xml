@@ -2,24 +2,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.talis</groupId>
+    <groupId>com.nextmethod</groupId>
     <artifactId>jersey-common</artifactId>
     <packaging>jar</packaging>
     <version>1.8-SNAPSHOT</version>
 
-    <url>https://github.com/talis/talis-jersey-common</url>
+    <url>https://github.com/earaya/jersey-common</url>
     <inceptionYear>2011</inceptionYear>
     <description>Common classes for use with Jersey JAX-RS Framework</description>
 
-    <organization>
-        <name>Talis</name>
-        <url>http://www.talis.com/</url>
-    </organization>
+    <!--<organization>-->
+        <!--<name>Next Method, LLC</name>-->
+        <!--<url>http://www.next-method.com/</url>-->
+    <!--</organization>-->
 
     <scm>
-        <developerConnection>scm:git:ssh://git@github.com/talis/jersey-common.git</developerConnection>
-        <connection>scm:git:git://github.com/talis/jersey-common.git</connection>
-        <url>http://github.com/talis/jersey-common</url>
+        <developerConnection>scm:git:ssh://git@github.com/earaya/jersey-common.git</developerConnection>
+        <connection>scm:git:git://github.com/earaya/jersey-common.git</connection>
+        <url>http://github.com/earaya/jersey-common</url>
     </scm>
 
     <properties>
@@ -31,17 +31,6 @@
         <slf4j.version>1.6.4</slf4j.version>
         <spdy.version>8.1.3.v20120416</spdy.version>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>talis-central-releases</id>
-            <url>http://oss.talisplatform.com/content/repositories/talis-central-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>talis-central-snapshots</id>
-            <url>http://oss.talisplatform.com/content/repositories/talis-central-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <dependencies>
         <!-- Jersey Modules -->
@@ -163,8 +152,23 @@
 
     </dependencies>
 
-    <build>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.jdbc.url>jdbc:postgresql://ec2-23-20-252-39.compute-1.amazonaws.com:27017/sonar</sonar.jdbc.url>
+                <sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
+                <sonar.jdbc.username>postgres</sonar.jdbc.username>
+                <sonar.jdbc.password>postgres</sonar.jdbc.password>
+                <sonar.host.url>http://ec2-23-20-252-39.compute-1.amazonaws.com:8080</sonar.host.url>
+            </properties>
+        </profile>
+    </profiles>
 
+    <build>
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
@@ -207,6 +211,12 @@
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.1.2</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.0</version>
             </plugin>
 
         </plugins>
