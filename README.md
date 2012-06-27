@@ -59,25 +59,6 @@ the @GET/@POST/etc methods in your Jersey resources can throw these exceptions,
 and a HTTP response will be generated with the appropriate status code, a 
 text/plain media type and the message from the exception in the body.     
  
-### Auth
-
-This is not production strength authentication for your public web properties.
-It consists of a Filter which uses a pluggable Authenicator mechanism to 
-identify the principle making a HTTP request (using basic auth), and stores that
-as the security context of the request. If the principle is authenticated 
-(according to whatever Authenticator implementation you plug in) it is assigned
-the role 'admin', which can then be used in JSR-250 role annotations on your 
-Jersey resources to restrict or grant access to particular resources or methods. 
-As mentioned, this is not an production strength authentication mechanism: we 
-implemented it purely as a safety valve to ensure that anything with serious 
-implications for the state of a service (like issuing a DELETE to the resource 
-which indicates an up status to the load balancer) requires some effort to execute.
-A couple of trivial Authenticator implementations are provided - one permissive, 
-the other restrictive as well as a Guice module which binds the permissive one
-(for apps where you just don't care about this).  
-In all honesty, there are much better ways to implement this behaviour but, 
-hey, this is legacy and its not been painful enough to warrant a re-do (yet)
-
 ### Filters
 
 Some request/response filters we found we were re-using in several places:
@@ -144,27 +125,23 @@ public static void main(String[] args) throws Exception {
 ### Reading a JSON config file
 
 ```java
-
 public void readConfigSample() {
 	ConfigFactory sampleConfigFactory = ConfigFactory.forClass(SampleConfig.class);
 	SampleConfig config = sampleConfigFactory.buildConfig(new File("path/to/file"));
 	
 	int someValue = config.getSomeValue();
 }
-
 ```
 
 ### Log4j Appender config that includes request id token
 
-'''xml
-
+```xml
 <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
   <layout class="org.apache.log4j.PatternLayout"> 
     <param name="ConversionPattern" value="%d{ISO8601} -%5p %-25c{1} :%t: %X{R_UID}|%m%n"/>
   </layout>
 </appender>
-
-'''
+```
 
 The ```%X{R_UID}``` is replaced with the value of the request id pulled from the MDC at runtime
 

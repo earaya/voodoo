@@ -36,13 +36,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.talis.jersey.HttpServer;
 import com.talis.jersey.guice.GenericServerInfoModule;
 import com.talis.jersey.guice.JerseyServletModule;
-import com.talis.jersey.guice.NoopAuthenticationModule;
 
 public class DefaultExceptionMapperAcceptanceTest {
 	
@@ -54,7 +51,6 @@ public class DefaultExceptionMapperAcceptanceTest {
 	public void setUp() throws Exception {
 		httpPort = findFreePort();
 		Module[] modules = {new JerseyServletModule("com.talis.jersey.apitest"), 
-							new NoopAuthenticationModule(),
 							new GenericServerInfoModule()};
 		embeddedServer = new HttpServer(new HttpServerConfig(httpPort));
 		embeddedServer.start(modules);

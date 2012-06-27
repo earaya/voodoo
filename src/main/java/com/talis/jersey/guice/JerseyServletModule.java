@@ -29,7 +29,6 @@ import com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.talis.jersey.auth.HttpBasicAuthenticationFilter;
 import com.talis.jersey.filters.LoggingFilter;
 import com.talis.jersey.filters.ServerAgentHeaderFilter;
 
@@ -60,7 +59,7 @@ public class JerseyServletModule extends ServletModule{
         params.put(PackagesResourceConfig.PROPERTY_PACKAGES, joinPackageNames(propertyPackages));
         params.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE.toString());
         
-        String requestFilters = joinClassNames(LoggingFilter.class, HttpBasicAuthenticationFilter.class, GZIPContentEncodingFilter.class);
+        String requestFilters = joinClassNames(LoggingFilter.class, GZIPContentEncodingFilter.class);
         String responseFilters = joinClassNames(LoggingFilter.class, ServerAgentHeaderFilter.class, GZIPContentEncodingFilter.class);
         
         params.put(PackagesResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, requestFilters);
