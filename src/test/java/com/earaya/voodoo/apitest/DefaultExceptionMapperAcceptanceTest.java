@@ -18,8 +18,8 @@ package com.earaya.voodoo.apitest;
 
 import com.earaya.voodoo.VuduServer;
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.earaya.voodoo.guice.GenericServerInfoModule;
-import com.earaya.voodoo.guice.JerseyServletModule;
+import com.earaya.voodoo.modules.GenericServerInfoModule;
+import com.earaya.voodoo.modules.JerseyServletModule;
 import com.google.inject.Module;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
