@@ -16,7 +16,7 @@
 package com.earaya.voodoo.apitest;
 
 
-import com.earaya.voodoo.HttpServer;
+import com.earaya.voodoo.VoodooServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
@@ -43,7 +43,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
     private final String expectedServerAgent = "myServer";
 
     int httpPort;
-    HttpServer embeddedServer;
+    VoodooServer embeddedServer;
     HttpClient httpClient = new DefaultHttpClient();
 
     @Before
@@ -52,7 +52,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         httpPort = findFreePort();
         Module[] modules = {new JerseyServletModule("com.earaya.voodoo.apitest"),
                 new GenericServerInfoModule()};
-        embeddedServer = new HttpServer(new HttpServerConfig(httpPort));
+        embeddedServer = new VoodooServer(new HttpServerConfig(httpPort));
         embeddedServer.start(modules);
     }
 

@@ -21,13 +21,13 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpServer {
+public class VoodooServer {
 
-    private static final transient Logger LOG = LoggerFactory.getLogger(HttpServer.class);
+    private static final transient Logger LOG = LoggerFactory.getLogger(VoodooServer.class);
     private final Server server;
     private final HttpServerConfig httpServerConfig;
 
-    public HttpServer(HttpServerConfig httpServerConfig) {
+    public VoodooServer(HttpServerConfig httpServerConfig) {
         this.server = new Server();
         this.httpServerConfig = httpServerConfig;
         this.server.addConnector(getConnector());

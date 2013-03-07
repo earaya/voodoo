@@ -16,7 +16,7 @@
 package com.earaya.voodoo.apitest;
 
 
-import com.earaya.voodoo.HttpServer;
+import com.earaya.voodoo.VoodooServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.guice.GenericServerInfoModule;
 import com.earaya.voodoo.guice.JerseyServletModule;
@@ -43,7 +43,7 @@ import static org.junit.Assert.assertNotNull;
 public class DefaultExceptionMapperAcceptanceTest {
 
     int httpPort;
-    HttpServer embeddedServer;
+    VoodooServer embeddedServer;
     HttpClient httpClient = new DefaultHttpClient();
 
     @Before
@@ -51,7 +51,7 @@ public class DefaultExceptionMapperAcceptanceTest {
         httpPort = findFreePort();
         Module[] modules = {new JerseyServletModule("com.earaya.voodoo.apitest"),
                 new GenericServerInfoModule()};
-        embeddedServer = new HttpServer(new HttpServerConfig(httpPort));
+        embeddedServer = new VoodooServer(new HttpServerConfig(httpPort));
         embeddedServer.start(modules);
     }
 
