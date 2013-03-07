@@ -1,19 +1,3 @@
-/*
- *    Copyright 2011 Talis Systems Ltd
- * 
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- * 
- *        http://www.apache.org/licenses/LICENSE-2.0
- * 
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package com.earaya.voodoo.filters;
 
 import java.util.Random;
@@ -31,7 +15,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoggingFilter.class);
     
-	public static final String X_TALIS_RESPONSE_ID = "X-TALIS-RESPONSE-ID";
+	public static final String X_VOODOO_RESPONSE_ID = "X-VOODOO-RESPONSE-ID";
 	public static final String REQUEST_UID = "R_UID";
 	static final String REQUEST_START_TIME = "R_START_TIME";
 	private final Random r = new Random();
@@ -54,7 +38,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 			Long startTime = (Long)object;
 			String requestUid = (String)MDC.get(REQUEST_UID);
 			long duration = System.currentTimeMillis() - startTime;
-			response.getHttpHeaders().add(X_TALIS_RESPONSE_ID, requestUid);  
+			response.getHttpHeaders().add(X_VOODOO_RESPONSE_ID, requestUid);
 			LOG.info("Finished request in {} milliseconds.",duration);
 		} else {
 			LOG.warn("Finished request, but did not have a start time to compare with. No metrics have been recorded.");
