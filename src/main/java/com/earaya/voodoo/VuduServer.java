@@ -45,7 +45,7 @@ public class VuduServer {
     }
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-    public void start(final Module... modules) throws Exception {
+    public void start() throws Exception {
         LOG.info("Starting http server on port {}", httpServerConfig.getPort());
 
         try {
@@ -58,7 +58,7 @@ public class VuduServer {
 
     private void setupGuice(final Module[] modules) {
         ServletContextHandler context = new ServletContextHandler(server, "/");
-        //context.addServlet(DefaultServlet.class, "/");
+        context.addServlet(DefaultServlet.class, "/");
         context.addFilter(GuiceFilter.class, "/*", null);
         context.addEventListener(new GuiceServletContextListener() {
             @Override
