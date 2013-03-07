@@ -32,25 +32,21 @@ public class VuduServer {
         this.httpServerConfig = httpServerConfig;
         this.server.addConnector(getConnector());
 
-        // Setup Metrics.
+        setupMetrics();
+    }
+
+    private void setupMetrics() {
         ServletContextHandler metrics = new ServletContextHandler(server, "/metrics");
         metrics.addServlet(MetricsServlet.class, "/*");
+    }
+
+    public void initialize(final Module... modules) {
+        setupGuice(modules);
     }
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public void start(final Module... modules) throws Exception {
         LOG.info("Starting http server on port {}", httpServerConfig.getPort());
-
-        // Setup Guice
-        ServletContextHandler context = new ServletContextHandler(server, "/");
-        context.addServlet(DefaultServlet.class, "/");
-        context.addFilter(GuiceFilter.class, "/*", null);
-        context.addEventListener(new GuiceServletContextListener() {
-            @Override
-            protected Injector getInjector() {
-                return Guice.createInjector(modules);
-            }
-        });
 
         try {
             server.start();
@@ -58,6 +54,18 @@ public class VuduServer {
             LOG.error("Error starting HTTP Server", e);
             throw e;
         }
+    }
+
+    private void setupGuice(final Module[] modules) {
+        ServletContextHandler context = new ServletContextHandler(server, "/");
+        //context.addServlet(DefaultServlet.class, "/");
+        context.addFilter(GuiceFilter.class, "/*", null);
+        context.addEventListener(new GuiceServletContextListener() {
+            @Override
+            protected Injector getInjector() {
+                return Guice.createInjector(modules);
+            }
+        });
     }
 
     public boolean isRunning() {
