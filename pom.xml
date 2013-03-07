@@ -2,12 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.talis</groupId>
-    <artifactId>jersey-common</artifactId>
+    <groupId>com.earaya</groupId>
+    <artifactId>voodoo</artifactId>
     <packaging>jar</packaging>
     <version>2.0-SNAPSHOT</version>
 
-    <url>https://github.com/earaya/jersey-common</url>
+    <url>https://github.com/earaya/voodoo</url>
     <inceptionYear>2011</inceptionYear>
     <description>Common classes for use with Jersey JAX-RS Framework</description>
 
@@ -17,9 +17,9 @@
     <!--</organization>-->
 
     <scm>
-        <developerConnection>scm:git:ssh://git@github.com/earaya/jersey-common.git</developerConnection>
-        <connection>scm:git:git://github.com/earaya/jersey-common.git</connection>
-        <url>http://github.com/earaya/jersey-common</url>
+        <developerConnection>scm:git:ssh://git@github.com/earaya/voodoo.git</developerConnection>
+        <connection>scm:git:git://github.com/earaya/voodoo.git</connection>
+        <url>http://github.com/earaya/voodoo</url>
     </scm>
 
     <properties>

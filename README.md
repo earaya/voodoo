@@ -1,4 +1,4 @@
-Jersey-Common is basically some glue code pulling together some great libraries in
+Voodoo is basically some glue code pulling together some great libraries in
 very much the same mould as [Dropwizard](https://github.com/codahale/dropwizard). 
 These libraries include:
 
@@ -32,7 +32,7 @@ See the examples below for how to plug all this together.
 
 It's important to note that the HttpServer is hard-coded to use a [SPDY](http://www.chromium.org/spdy/spdy-whitepaper) 
 connector since it'll degrade to HTTP if the client does not support SPDY. This, however, means that
-Jersey-Common requires Java 7.
+Voodoo requires Java 7.
 
 ### JsonConfigReader
 
