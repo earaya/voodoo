@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.guice;
+package com.earaya.voodoo.modules;
 
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
@@ -34,7 +34,7 @@ import java.util.logging.LogManager;
 public class JerseyServletModule extends ServletModule {
 
     private final String[] propertyPackages;
-    public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.guice.disable-default-filters";
+    public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.modules.disable-default-filters";
 
 
     static {
