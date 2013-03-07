@@ -81,7 +81,7 @@ Sets the Server header on HTTP responses to a value provided by an injected
 ServerInfo implementation. How you generate this is obviously app specific (we tend
 to use a ServerInfo impl which reads from a properties file, created at build time).
 GenericServerInfoModule binds ServerInfo to an anonymous instance which reads the 
-desired String from a system property ( com.earaya.voodoo.guice.serverid )
+desired String from a system property ( com.earaya.voodoo.modules.serverid )
  
 ### Guice
 
@@ -95,7 +95,7 @@ Content-Encoding & Accept-Encoding headers in the request. The pretty-printing
 Jackson ObjectMapperProvider & exception formatting DefaultExceptionMapper (see above)
 are also registered with the application by default. 
 You can disable all of this default configuration by setting the system property
-com.earaya.voodoo.guice.disable-default-filters to "true".
+com.earaya.voodoo.modules.disable-default-filters to "true".
      
 Also in this package are a couple of modules which bind the authentication & server
 identifier implementations to defaults. So that if you don't care about these too
@@ -108,7 +108,7 @@ Examples
 
 ```java
 public static void main(String[] args) throws Exception {
-  System.setProperty("com.earaya.voodoo.guice.serverid", "AnExample");
+  System.setProperty("com.earaya.voodoo.modules.serverid", "AnExample");
   Module[] modules =
   	{
                              new ApplicationModule(),                     // contains app specific bindings
