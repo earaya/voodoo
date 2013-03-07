@@ -52,7 +52,8 @@ public class DefaultExceptionMapperAcceptanceTest {
         Module[] modules = {new JerseyServletModule("com.earaya.voodoo.apitest"),
                 new GenericServerInfoModule()};
         embeddedServer = new VuduServer(new HttpServerConfig(httpPort));
-        embeddedServer.start(modules);
+        embeddedServer.initialize(modules);
+        embeddedServer.start();
     }
 
     @After
