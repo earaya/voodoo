@@ -91,20 +91,19 @@
             <!--<version>1.0</version>-->
         <!--</dependency>-->
 
-
-
+        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
 
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -112,7 +111,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Test Dependencies-->
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
