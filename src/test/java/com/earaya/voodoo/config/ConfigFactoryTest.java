@@ -16,9 +16,9 @@ public class ConfigFactoryTest {
         File file = new File(fileUri);
         FlatConfig flatConfig = flatConfigConfigFactory.buildConfig(file);
 
-        assert(flatConfig != null);
-        assert(flatConfig.aString.equals("someString"));
-        assert(flatConfig.anInt == 3);
+        assert (flatConfig != null);
+        assert (flatConfig.aString.equals("someString"));
+        assert (flatConfig.anInt == 3);
     }
 
     @Test
@@ -28,10 +28,10 @@ public class ConfigFactoryTest {
         File file = new File(fileUri);
         NestedConfig nestedConfig = nestedConfigConfigFactory.buildConfig(file);
 
-        assert(nestedConfig != null);
-        assert(nestedConfig.childConfig != null);
-        assert(nestedConfig.childConfig.anInt == 4);
-        assert(nestedConfig.aString.equals("aString"));
+        assert (nestedConfig != null);
+        assert (nestedConfig.childConfig != null);
+        assert (nestedConfig.childConfig.anInt == 4);
+        assert (nestedConfig.aString.equals("aString"));
     }
 
     @Test
@@ -43,8 +43,8 @@ public class ConfigFactoryTest {
         FlatConfigWithConstructors flatConfigWithConstructors =
                 flatConfigWithConstructorsConfigFactory.buildConfig(file);
 
-        assert(flatConfigWithConstructors != null);
-        assert(flatConfigWithConstructors.aString.equals("someString"));
-        assert(flatConfigWithConstructors.anInt == 3);
+        assert (flatConfigWithConstructors != null);
+        assert (flatConfigWithConstructors.aString.equals("someString"));
+        assert (flatConfigWithConstructors.anInt == 3);
     }
 }

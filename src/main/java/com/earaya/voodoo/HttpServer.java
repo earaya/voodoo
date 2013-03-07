@@ -5,9 +5,13 @@
 
 package com.earaya.voodoo;
 
-import com.google.inject.Guice;
-import com.google.inject.Module;
 import com.earaya.voodoo.config.HttpServerConfig;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.servlet.GuiceFilter;
+import com.google.inject.servlet.GuiceServletContextListener;
+import com.yammer.metrics.reporting.MetricsServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -17,15 +21,10 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceFilter;
-import com.google.inject.servlet.GuiceServletContextListener;
-import com.yammer.metrics.reporting.MetricsServlet;
-
 public class HttpServer {
 
-	private static final transient Logger LOG = LoggerFactory.getLogger(HttpServer.class);
-	private final Server server;
+    private static final transient Logger LOG = LoggerFactory.getLogger(HttpServer.class);
+    private final Server server;
     private final HttpServerConfig httpServerConfig;
 
     public HttpServer(HttpServerConfig httpServerConfig) {
@@ -56,28 +55,28 @@ public class HttpServer {
         try {
             server.start();
         } catch (Exception e) {
-            LOG.error("Error starting HTTP Server" , e);
+            LOG.error("Error starting HTTP Server", e);
             throw e;
         }
     }
 
     public boolean isRunning() {
-		return server.isRunning();
-	}
+        return server.isRunning();
+    }
 
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public void stop() throws Exception {
-		server.stop();
-	}
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+    public void stop() throws Exception {
+        server.stop();
+    }
 
-	public void waitForShutdown() throws InterruptedException {
-		server.join();
-	}
+    public void waitForShutdown() throws InterruptedException {
+        server.join();
+    }
 
     private ServerConnector getConnector() {
         ServerConnector connector;
 
-        if(null == httpServerConfig.getSslConfig()) {
+        if (null == httpServerConfig.getSslConfig()) {
             connector = new HTTPSPDYServerConnector(this.server);
         } else {
             SslContextFactory sslContextFactory = new SslContextFactory(httpServerConfig.getSslConfig().getKeyStorePath());

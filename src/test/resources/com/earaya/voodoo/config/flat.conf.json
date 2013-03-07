@@ -1,4 +1,4 @@
 {
-	"aString" : "someString",
-	"anInt" : 3
+  "aString": "someString",
+  "anInt": 3
 }

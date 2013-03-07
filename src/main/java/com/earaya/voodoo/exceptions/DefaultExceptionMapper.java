@@ -11,16 +11,16 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class DefaultExceptionMapper implements ExceptionMapper<HttpException> {
 
-	@Override
-	public Response toResponse(HttpException exception) {
-		ResponseBuilder response = 
-				Response.status(exception.getStatus())
-								.entity(exception.getMessage())
-								.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN);
-		if (exception.getRetryAfter() >= 0){
-			response.header("Retry-After", exception.getRetryAfter());
-		}
-		return response.build();
-	}
+    @Override
+    public Response toResponse(HttpException exception) {
+        ResponseBuilder response =
+                Response.status(exception.getStatus())
+                        .entity(exception.getMessage())
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN);
+        if (exception.getRetryAfter() >= 0) {
+            response.header("Retry-After", exception.getRetryAfter());
+        }
+        return response.build();
+    }
 
 }

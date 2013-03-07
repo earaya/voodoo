@@ -1,13 +1,13 @@
 package com.earaya.voodoo.apitest;
 
 
-import com.google.inject.Module;
 import com.earaya.voodoo.HttpServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
 import com.earaya.voodoo.guice.GenericServerInfoModule;
 import com.earaya.voodoo.guice.JerseyServletModule;
+import com.google.inject.Module;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
