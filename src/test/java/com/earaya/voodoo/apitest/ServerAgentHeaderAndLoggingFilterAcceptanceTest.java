@@ -66,7 +66,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         HttpGet httpGet = new HttpGet(getUrl(httpPort, "foo"));
         HttpResponse response = httpClient.execute(httpGet);
         assertEquals(404, response.getStatusLine().getStatusCode());
-        assertTalisResponseIdPresent(response);
+        assertVoodooResponseIdPresent(response);
         assertServerAgentHeaderPresent(response);
     }
 
@@ -75,7 +75,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         HttpGet httpGet = new HttpGet(getUrl(httpPort, "stub"));
         HttpResponse response = httpClient.execute(httpGet);
         assertEquals(200, response.getStatusLine().getStatusCode());
-        assertTalisResponseIdPresent(response);
+        assertVoodooResponseIdPresent(response);
         assertServerAgentHeaderPresent(response);
     }
 
@@ -84,7 +84,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         HttpGet httpGet = new HttpGet(getUrl(httpPort, "stub/internalErr"));
         HttpResponse response = httpClient.execute(httpGet);
         assertEquals(500, response.getStatusLine().getStatusCode());
-        assertTalisResponseIdPresent(response);
+        assertVoodooResponseIdPresent(response);
         assertServerAgentHeaderPresent(response);
     }
 
@@ -104,9 +104,9 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         assertEquals(expectedServerAgent, serverHeader.getValue());
     }
 
-    private void assertTalisResponseIdPresent(HttpResponse response) {
-        Header talisResponseId = response.getFirstHeader(LoggingFilter.X_TALIS_RESPONSE_ID);
-        assertNotNull(talisResponseId);
+    private void assertVoodooResponseIdPresent(HttpResponse response) {
+        Header voodooResponseId = response.getFirstHeader(LoggingFilter.X_VOODOO_RESPONSE_ID);
+        assertNotNull(voodooResponseId);
     }
 }
 

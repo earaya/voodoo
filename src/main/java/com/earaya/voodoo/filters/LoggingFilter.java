@@ -31,7 +31,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoggingFilter.class);
     
-	public static final String X_TALIS_RESPONSE_ID = "X-TALIS-RESPONSE-ID";
+	public static final String X_VOODOO_RESPONSE_ID = "X-VOODOO-RESPONSE-ID";
 	public static final String REQUEST_UID = "R_UID";
 	static final String REQUEST_START_TIME = "R_START_TIME";
 	private final Random r = new Random();
@@ -54,7 +54,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 			Long startTime = (Long)object;
 			String requestUid = (String)MDC.get(REQUEST_UID);
 			long duration = System.currentTimeMillis() - startTime;
-			response.getHttpHeaders().add(X_TALIS_RESPONSE_ID, requestUid);  
+			response.getHttpHeaders().add(X_VOODOO_RESPONSE_ID, requestUid);
 			LOG.info("Finished request in {} milliseconds.",duration);
 		} else {
 			LOG.warn("Finished request, but did not have a start time to compare with. No metrics have been recorded.");

@@ -106,18 +106,18 @@ public class LoggingFilterTest {
 	}
 
 	@Test
-	public void xTalisResponseIDReturnedWhenNoResponseHeadersExist() {	
+	public void xVoodooResponseIDReturnedWhenNoResponseHeadersExist() {
 		loggingFilter.filter(mockRequest);
 		loggingFilter.filter(mockRequest, mockResponse);		
 		MultivaluedMap<String, Object> responseHeaders = mockResponse.getHttpHeaders();
 		
 		assertEquals(1,responseHeaders.size());
 		
-		assertHeaderValue(responseHeaders, LoggingFilter.X_TALIS_RESPONSE_ID, MDC.get(LoggingFilter.REQUEST_UID));
+		assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, MDC.get(LoggingFilter.REQUEST_UID));
 	}
 
 	@Test
-	public void xTalisResponseIDReturnedWhenHeadersAlreadyExist() {
+	public void xVoodooResponseIDReturnedWhenHeadersAlreadyExist() {
 		loggingFilter.filter(mockRequest);
 		
 		MultivaluedMap<String, Object> responseHeaders = mockResponse.getHttpHeaders();
@@ -127,7 +127,7 @@ public class LoggingFilterTest {
 		
 		assertEquals(2,responseHeaders.size());
 		
-		assertHeaderValue(responseHeaders, LoggingFilter.X_TALIS_RESPONSE_ID, MDC.get(LoggingFilter.REQUEST_UID));
+		assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, MDC.get(LoggingFilter.REQUEST_UID));
 		assertHeaderValue(responseHeaders, "customheader1", "foo");
 	}
 
