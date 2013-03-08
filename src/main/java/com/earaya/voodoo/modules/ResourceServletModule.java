@@ -26,14 +26,16 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
 public class ResourceServletModule extends ServletModule {
 
-    private final String[] propertyPackages;
+    private final List<String> resourcePackages = new ArrayList<>();
     public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.modules.disable-default-filters";
 
 
@@ -48,15 +50,14 @@ public class ResourceServletModule extends ServletModule {
         SLF4JBridgeHandler.install();
     }
 
-    public ResourceServletModule(String... propertyPackages) {
-        //TODO: check rootPath.
-        this.propertyPackages = propertyPackages;
+    public ResourceServletModule(String resourcePackage) {
+        this.resourcePackages.add(resourcePackage);
     }
 
     @Override
     protected void configureServlets() {
         final Map<String, String> params = new HashMap<String, String>();
-        params.put(PackagesResourceConfig.PROPERTY_PACKAGES, joinPackageNames(propertyPackages));
+        params.put(PackagesResourceConfig.PROPERTY_PACKAGES, joinPackageNames(resourcePackages));
         params.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE.toString());
 
         String requestFilters = joinClassNames(LoggingFilter.class, GZIPContentEncodingFilter.class);
@@ -70,7 +71,7 @@ public class ResourceServletModule extends ServletModule {
         serve("/*").with(GuiceContainer.class, params);
     }
 
-    private String joinPackageNames(String... packageName) {
+    private String joinPackageNames(List<String> packages) {
         StringBuilder builder = new StringBuilder();
 
         boolean first = true;
@@ -79,7 +80,7 @@ public class ResourceServletModule extends ServletModule {
             first = false;
         }
 
-        for (String name : packageName) {
+        for (String name : packages) {
             if (first) {
                 first = false;
             } else {
@@ -91,10 +92,10 @@ public class ResourceServletModule extends ServletModule {
     }
 
     @SuppressWarnings("rawtypes")
-    private String joinClassNames(Class... clazz) {
+    private String joinClassNames(Class... classes) {
         StringBuilder builder = new StringBuilder("");
         boolean first = true;
-        for (Class theClass : clazz) {
+        for (Class theClass : classes) {
             if (first) {
                 first = false;
             } else {
