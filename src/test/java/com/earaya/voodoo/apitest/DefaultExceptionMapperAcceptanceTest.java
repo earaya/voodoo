@@ -15,11 +15,9 @@
  */
 package com.earaya.voodoo.apitest;
 
-
 import com.earaya.voodoo.VuduServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.modules.GenericServerInfoModule;
-import com.earaya.voodoo.modules.MetricsAdminModule;
 import com.earaya.voodoo.modules.ResourceServletModule;
 import com.google.inject.Module;
 import org.apache.commons.io.IOUtils;
