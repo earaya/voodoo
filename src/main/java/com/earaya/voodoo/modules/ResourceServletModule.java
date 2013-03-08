@@ -37,7 +37,7 @@ public class ResourceServletModule extends ServletModule {
 
     private final List<String> resourcePackages = new ArrayList<>();
     private String rootPath = "";
-    public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.modules.disable-default-filters";
+    public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.disable-default-filters";
 
 
     static {
