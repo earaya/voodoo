@@ -14,6 +14,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.yammer.metrics.reporting.MetricsServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnector;
@@ -33,7 +34,7 @@ public class VuduServer {
         this.server.addConnector(getConnector());
     }
 
-    public void initialize(final Module... modules) {
+    public void initialize(final Module[] modules, final ServletContextHandler... handlers) {
         setupGuice(modules);
     }
 
