@@ -30,7 +30,6 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
     @Override
     public ObjectMapper getContext(Class<?> type) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(Feature.INDENT_OUTPUT, true);
         AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
         mapper.setDeserializationConfig(mapper.copyDeserializationConfig().withAnnotationIntrospector(introspector));
         mapper.setSerializationConfig(mapper.copySerializationConfig().withAnnotationIntrospector(introspector));

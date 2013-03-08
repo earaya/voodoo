@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.guice;
+package com.earaya.voodoo.modules;
 
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
@@ -26,15 +26,18 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-public class JerseyServletModule extends ServletModule {
+public class ResourceServletModule extends ServletModule {
 
-    private final String[] propertyPackages;
-    public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.guice.disable-default-filters";
+    private final List<String> resourcePackages = new ArrayList<>();
+    private String rootPath = "";
+    public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.modules.disable-default-filters";
 
 
     static {
@@ -48,14 +51,24 @@ public class JerseyServletModule extends ServletModule {
         SLF4JBridgeHandler.install();
     }
 
-    public JerseyServletModule(String... propertyPackages) {
-        this.propertyPackages = propertyPackages;
+    public ResourceServletModule(String resourcePackage) {
+        this.resourcePackages.add(resourcePackage);
+    }
+
+    public ResourceServletModule packageName(String resourcePackage) {
+        this.resourcePackages.add(resourcePackage);
+        return this;
+    }
+
+    public ResourceServletModule root(String rootPath) {
+        this.rootPath = rootPath;
+        return this;
     }
 
     @Override
     protected void configureServlets() {
         final Map<String, String> params = new HashMap<String, String>();
-        params.put(PackagesResourceConfig.PROPERTY_PACKAGES, joinPackageNames(propertyPackages));
+        params.put(PackagesResourceConfig.PROPERTY_PACKAGES, joinPackageNames(resourcePackages));
         params.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE.toString());
 
         String requestFilters = joinClassNames(LoggingFilter.class, GZIPContentEncodingFilter.class);
@@ -66,10 +79,10 @@ public class JerseyServletModule extends ServletModule {
 
         params.put(PackagesResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, RolesAllowedResourceFilterFactory.class.getName());
 
-        serve("/*").with(GuiceContainer.class, params);
+        serve(rootPath + "/*").with(GuiceContainer.class, params);
     }
 
-    private String joinPackageNames(String... packageName) {
+    private String joinPackageNames(List<String> packages) {
         StringBuilder builder = new StringBuilder();
 
         boolean first = true;
@@ -78,7 +91,7 @@ public class JerseyServletModule extends ServletModule {
             first = false;
         }
 
-        for (String name : packageName) {
+        for (String name : packages) {
             if (first) {
                 first = false;
             } else {
@@ -90,10 +103,10 @@ public class JerseyServletModule extends ServletModule {
     }
 
     @SuppressWarnings("rawtypes")
-    private String joinClassNames(Class... clazz) {
+    private String joinClassNames(Class... classes) {
         StringBuilder builder = new StringBuilder("");
         boolean first = true;
-        for (Class theClass : clazz) {
+        for (Class theClass : classes) {
             if (first) {
                 first = false;
             } else {

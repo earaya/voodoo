@@ -16,10 +16,10 @@
 package com.earaya.voodoo.apitest;
 
 
-import com.earaya.voodoo.VoodooServer;
+import com.earaya.voodoo.VuduServer;
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.earaya.voodoo.guice.GenericServerInfoModule;
-import com.earaya.voodoo.guice.JerseyServletModule;
+import com.earaya.voodoo.modules.GenericServerInfoModule;
+import com.earaya.voodoo.modules.ResourceServletModule;
 import com.google.inject.Module;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -43,16 +43,17 @@ import static org.junit.Assert.assertNotNull;
 public class DefaultExceptionMapperAcceptanceTest {
 
     int httpPort;
-    VoodooServer embeddedServer;
+    VuduServer embeddedServer;
     HttpClient httpClient = new DefaultHttpClient();
 
     @Before
     public void setUp() throws Exception {
         httpPort = findFreePort();
-        Module[] modules = {new JerseyServletModule("com.earaya.voodoo.apitest"),
+        Module[] modules = {new ResourceServletModule("com.earaya.voodoo.apitest"),
                 new GenericServerInfoModule()};
-        embeddedServer = new VoodooServer(new HttpServerConfig(httpPort));
-        embeddedServer.start(modules);
+        embeddedServer = new VuduServer(new HttpServerConfig(httpPort));
+        embeddedServer.initialize(modules);
+        embeddedServer.start();
     }
 
     @After

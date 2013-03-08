@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.earaya.voodoo.guice;
+package com.earaya.voodoo.modules;
 
 import com.earaya.voodoo.filters.ServerInfo;
 import com.google.inject.AbstractModule;
@@ -21,7 +21,7 @@ import com.google.inject.AbstractModule;
 public class GenericServerInfoModule extends AbstractModule {
 
     public static final String SERVER_IDENTIFIER_DEFAULT = "Jetty/Jersey Web Server";
-    public static final String SERVER_IDENTIFIER_PROPERTY = "com.earaya.voodoo.guice.serverid";
+    public static final String SERVER_IDENTIFIER_PROPERTY = "com.earaya.voodoo";
 
     @Override
     protected void configure() {
