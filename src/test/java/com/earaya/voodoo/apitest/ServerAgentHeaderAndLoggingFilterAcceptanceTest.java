@@ -50,7 +50,8 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
     public void setUp() throws Exception {
         System.setProperty(GenericServerInfoModule.SERVER_IDENTIFIER_PROPERTY, expectedServerAgent);
         httpPort = findFreePort();
-        Module[] modules = {new ResourceServletModule("com.earaya.voodoo.apitest"),
+        Module[] modules = {
+                new ResourceServletModule("com.earaya.voodoo.apitest"),
                 new GenericServerInfoModule()};
         embeddedServer = new VuduServer(new HttpServerConfig(httpPort));
         embeddedServer.initialize(modules);
