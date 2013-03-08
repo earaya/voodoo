@@ -21,7 +21,7 @@ import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
 import com.earaya.voodoo.modules.GenericServerInfoModule;
-import com.earaya.voodoo.modules.JerseyServletModule;
+import com.earaya.voodoo.modules.ResourceServletModule;
 import com.google.inject.Module;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -50,7 +50,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
     public void setUp() throws Exception {
         System.setProperty(GenericServerInfoModule.SERVER_IDENTIFIER_PROPERTY, expectedServerAgent);
         httpPort = findFreePort();
-        Module[] modules = {new JerseyServletModule("com.earaya.voodoo.apitest"),
+        Module[] modules = {new ResourceServletModule("com.earaya.voodoo.apitest"),
                 new GenericServerInfoModule()};
         embeddedServer = new VuduServer(new HttpServerConfig(httpPort));
         embeddedServer.initialize(modules);

@@ -19,7 +19,7 @@ package com.earaya.voodoo.apitest;
 import com.earaya.voodoo.VuduServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.modules.GenericServerInfoModule;
-import com.earaya.voodoo.modules.JerseyServletModule;
+import com.earaya.voodoo.modules.ResourceServletModule;
 import com.google.inject.Module;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -49,7 +49,7 @@ public class DefaultExceptionMapperAcceptanceTest {
     @Before
     public void setUp() throws Exception {
         httpPort = findFreePort();
-        Module[] modules = {new JerseyServletModule("com.earaya.voodoo.apitest"),
+        Module[] modules = {new ResourceServletModule("com.earaya.voodoo.apitest"),
                 new GenericServerInfoModule()};
         embeddedServer = new VuduServer(new HttpServerConfig(httpPort));
         embeddedServer.initialize(modules);

@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-public class JerseyServletModule extends ServletModule {
+public class ResourceServletModule extends ServletModule {
 
     private final String[] propertyPackages;
     public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.modules.disable-default-filters";
@@ -48,7 +48,8 @@ public class JerseyServletModule extends ServletModule {
         SLF4JBridgeHandler.install();
     }
 
-    public JerseyServletModule(String... propertyPackages) {
+    public ResourceServletModule(String... propertyPackages) {
+        //TODO: check rootPath.
         this.propertyPackages = propertyPackages;
     }
 
