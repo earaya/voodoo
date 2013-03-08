@@ -67,6 +67,8 @@ public class VuduServer {
     }
 
     private ContextHandler getVoodooContextHandler(final Module[] modules) {
+        // Question: Should we inject Jetty's GzipHandler here by default? Will this conflict with the JersyGzip stuff
+        // in ResourceServletModule?
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
         context.addServlet(DefaultServlet.class, "/");
