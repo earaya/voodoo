@@ -36,6 +36,7 @@ import java.util.logging.LogManager;
 public class ResourceServletModule extends ServletModule {
 
     private final List<String> resourcePackages = new ArrayList<>();
+    private String rootPath = "";
     public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.modules.disable-default-filters";
 
 
@@ -68,7 +69,7 @@ public class ResourceServletModule extends ServletModule {
 
         params.put(PackagesResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, RolesAllowedResourceFilterFactory.class.getName());
 
-        serve("/*").with(GuiceContainer.class, params);
+        serve(rootPath + "/*").with(GuiceContainer.class, params);
     }
 
     private String joinPackageNames(List<String> packages) {
