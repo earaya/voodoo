@@ -10,6 +10,6 @@ public class MetricsAdminModule extends ServletModule {
     @Override
     protected void configureServlets() {
         bind(AdminServlet.class).in(Singleton.class);
-        serve("/metrics-admin/*").with(AdminServlet.class);
+        serve("/ops-menu/*").with(AdminServlet.class);
     }
 }
