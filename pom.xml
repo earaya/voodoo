@@ -54,6 +54,11 @@
             <artifactId>jetty-annotations</artifactId>
             <version>${jetty.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty.npn</groupId>
+            <artifactId>npn-boot</artifactId>
+            <version>8.1.2.v20120308</version>
+        </dependency>
 
         <!-- Jersey Modules -->
         <dependency>
