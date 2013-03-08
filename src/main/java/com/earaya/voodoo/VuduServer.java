@@ -11,10 +11,9 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.yammer.metrics.reporting.MetricsServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.server.handler.*;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnector;
@@ -29,13 +28,18 @@ public class VuduServer {
     private final HttpServerConfig httpServerConfig;
 
     public VuduServer(HttpServerConfig httpServerConfig) {
-        this.server = new Server();
         this.httpServerConfig = httpServerConfig;
-        this.server.addConnector(getConnector());
+        server = new Server();
+        server.addConnector(getConnector());
     }
 
-    public void initialize(final Module[] modules, final ServletContextHandler... handlers) {
-        setupGuice(modules);
+    public void initialize(final Module[] modules, final ContextHandler... contextHandlers) {
+        HandlerCollection handlerCollection = new ContextHandlerCollection();
+        for(ContextHandler contextHandler : contextHandlers) {
+            handlerCollection.addHandler(contextHandler);
+        }
+        handlerCollection.addHandler(getVoodooContextHandler(modules));
+        server.setHandler(handlerCollection);
     }
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
@@ -50,8 +54,9 @@ public class VuduServer {
         }
     }
 
-    private void setupGuice(final Module[] modules) {
-        ServletContextHandler context = new ServletContextHandler(server, "/");
+    private ContextHandler getVoodooContextHandler(final Module[] modules) {
+        ServletContextHandler context = new ServletContextHandler();
+        context.setContextPath("/");
         context.addServlet(DefaultServlet.class, "/");
         context.addFilter(GuiceFilter.class, "/*", null);
         context.addEventListener(new GuiceServletContextListener() {
@@ -60,6 +65,7 @@ public class VuduServer {
                 return Guice.createInjector(modules);
             }
         });
+        return context;
     }
 
     public boolean isRunning() {
