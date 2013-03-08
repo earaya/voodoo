@@ -55,6 +55,16 @@ public class ResourceServletModule extends ServletModule {
         this.resourcePackages.add(resourcePackage);
     }
 
+    public ResourceServletModule packageName(String resourcePackage) {
+        this.resourcePackages.add(resourcePackage);
+        return this;
+    }
+
+    public ResourceServletModule root(String rootPath) {
+        this.rootPath = rootPath;
+        return this;
+    }
+
     @Override
     protected void configureServlets() {
         final Map<String, String> params = new HashMap<String, String>();
