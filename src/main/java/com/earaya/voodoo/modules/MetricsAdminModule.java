@@ -1,3 +1,5 @@
+/* Copyright 2013 Esteban Araya */
+
 package com.earaya.voodoo.modules;
 
 import com.google.inject.servlet.ServletModule;
