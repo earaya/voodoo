@@ -31,13 +31,6 @@ public class VuduServer {
         this.server = new Server();
         this.httpServerConfig = httpServerConfig;
         this.server.addConnector(getConnector());
-
-        setupMetrics();
-    }
-
-    private void setupMetrics() {
-        ServletContextHandler metrics = new ServletContextHandler(server, "/metrics");
-        metrics.addServlet(MetricsServlet.class, "/*");
     }
 
     public void initialize(final Module... modules) {
