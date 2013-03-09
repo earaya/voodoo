@@ -27,6 +27,7 @@ import javax.ws.rs.ext.Provider;
  *
  * @param <T>    the principal type.
  */
+
 public class BasicAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicAuthProvider.class);
 

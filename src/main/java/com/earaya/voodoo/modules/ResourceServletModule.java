@@ -27,15 +27,13 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
 public class ResourceServletModule extends ServletModule {
 
+    private final PackagesResourceConfig resourceConfig = new PackagesResourceConfig("com.earaya.voodoo");
     private final List<String> resourcePackages = new ArrayList<>();
     private String rootPath = "";
     public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.disable-default-filters";
@@ -79,6 +77,7 @@ public class ResourceServletModule extends ServletModule {
         params.put(PackagesResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, responseFilters);
 
         params.put(PackagesResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, RolesAllowedResourceFilterFactory.class.getName());
+        params.put(GuiceContainer.RESOURCE_CONFIG_CLASS, "com.earaya.voodoo.VuduResourceConfig");
 
         serve(rootPath + "/*").with(GuiceContainer.class, params);
     }

@@ -93,6 +93,16 @@
             <artifactId>metrics-servlet</artifactId>
             <version>${metrics.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-guice</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-jersey</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
