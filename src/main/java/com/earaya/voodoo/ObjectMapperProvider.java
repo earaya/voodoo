@@ -18,7 +18,6 @@ package com.earaya.voodoo;
 
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
 import javax.ws.rs.ext.ContextResolver;

@@ -20,12 +20,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
 
 /**
  * A Jersey provider for Basic HTTP authentication.
  *
- * @param <T>    the principal type.
+ * @param <T> the principal type.
  */
 
 public class BasicAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
@@ -97,9 +96,9 @@ public class BasicAuthProvider<T> implements InjectableProvider<Auth, Parameter>
     /**
      * Creates a new BasicAuthProvider with the given {@link Authenticator} and realm.
      *
-     * @param authenticator    the authenticator which will take the {@link BasicCredentials} and
-     *                         convert them into instances of {@code T}
-     * @param realm            the name of the authentication realm
+     * @param authenticator the authenticator which will take the {@link BasicCredentials} and
+     *                      convert them into instances of {@code T}
+     * @param realm         the name of the authentication realm
      */
     public BasicAuthProvider(Authenticator<BasicCredentials, T> authenticator, String realm) {
         this.authenticator = authenticator;

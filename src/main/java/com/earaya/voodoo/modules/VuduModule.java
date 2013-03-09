@@ -1,14 +1,9 @@
 package com.earaya.voodoo.modules;
 
 import com.earaya.voodoo.VuduResourceConfig;
-import com.earaya.voodoo.auth.basic.BasicAuthProvider;
-import com.earaya.voodoo.sample.SimpleAuthenticator;
-import com.earaya.voodoo.sample.User;
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
-import com.yammer.metrics.core.MetricsRegistry;
 import com.yammer.metrics.guice.InstrumentationModule;
-import com.yammer.metrics.guice.JmxReporterProvider;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 import com.yammer.metrics.reporting.AdminServlet;
 

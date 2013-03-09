@@ -23,10 +23,11 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.sun.jersey.spi.container.servlet.WebFilterConfig;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.*;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnector;
@@ -48,7 +49,7 @@ public class VuduServer {
 
     public void initialize(final Module[] modules, final ContextHandler... contextHandlers) {
         HandlerCollection handlerCollection = new ContextHandlerCollection();
-        for(ContextHandler contextHandler : contextHandlers) {
+        for (ContextHandler contextHandler : contextHandlers) {
             handlerCollection.addHandler(contextHandler);
         }
         handlerCollection.addHandler(getVoodooContextHandler(modules));

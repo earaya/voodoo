@@ -13,11 +13,11 @@ public class SampleServer {
     public static void main(String[] args) throws Exception {
 
         VuduResourceConfig config = new VuduResourceConfig();
-        config.addSingleton(new BasicAuthProvider<User>(new SimpleAuthenticator(), "realm"));
+        config.addSingleton(new BasicAuthProvider<SampleUser>(new SampleAuthenticator(), "realm"));
 
         VuduServer vuduServer = new VuduServer(new HttpServerConfig(8080));
-        vuduServer.initialize(new Module[] {
-                new VuduModule(config), // Sets up a lot fo the Vudu magic.
+        vuduServer.initialize(new Module[]{
+                new VuduModule(config), // Magic.
                 new ResourceServletModule("com.earaya.voodoo.sample"), // Sets up resources.
                 new GenericServerInfoModule() // Some server info.
         });

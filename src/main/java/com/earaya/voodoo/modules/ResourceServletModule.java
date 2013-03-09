@@ -27,7 +27,10 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
