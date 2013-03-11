@@ -16,6 +16,7 @@
 package com.earaya.voodoo.apitest;
 
 
+import com.earaya.voodoo.VuduResourceConfig;
 import com.earaya.voodoo.VuduServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
@@ -51,7 +52,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         System.setProperty(GenericServerInfoModule.SERVER_IDENTIFIER_PROPERTY, expectedServerAgent);
         httpPort = findFreePort();
         Module[] modules = {
-                new ResourceServletModule("com.earaya.voodoo.apitest"),
+                new ResourceServletModule(new VuduResourceConfig("com.earaya.voodoo.apitest")),
                 new GenericServerInfoModule()};
         embeddedServer = new VuduServer(new HttpServerConfig(httpPort));
         embeddedServer.initialize(modules);

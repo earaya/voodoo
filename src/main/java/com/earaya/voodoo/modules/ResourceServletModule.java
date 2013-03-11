@@ -17,6 +17,7 @@
 
 package com.earaya.voodoo.modules;
 
+import com.earaya.voodoo.VuduResourceConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
 import com.google.inject.servlet.ServletModule;
@@ -36,11 +37,8 @@ import java.util.logging.LogManager;
 
 public class ResourceServletModule extends ServletModule {
 
-    private final PackagesResourceConfig resourceConfig = new PackagesResourceConfig("com.earaya.voodoo");
-    private final List<String> resourcePackages = new ArrayList<>();
+    private final VuduResourceConfig config;
     private String rootPath = "";
-    public static final String DISABLE_DEFAULT_FILTERS_PROPERTY = "com.earaya.voodoo.disable-default-filters";
-
 
     static {
         // Jersey uses java.util.logging, so here we bridge to slf4
@@ -53,13 +51,8 @@ public class ResourceServletModule extends ServletModule {
         SLF4JBridgeHandler.install();
     }
 
-    public ResourceServletModule(String resourcePackage) {
-        this.resourcePackages.add(resourcePackage);
-    }
-
-    public ResourceServletModule packageName(String resourcePackage) {
-        this.resourcePackages.add(resourcePackage);
-        return this;
+    public ResourceServletModule(VuduResourceConfig config) {
+        this.config = config;
     }
 
     public ResourceServletModule root(String rootPath) {
@@ -69,8 +62,7 @@ public class ResourceServletModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        final Map<String, String> params = new HashMap<String, String>();
-        params.put(PackagesResourceConfig.PROPERTY_PACKAGES, joinPackageNames(resourcePackages));
+        final Map<String, String> params = new HashMap<>();
         params.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE.toString());
 
         String requestFilters = joinClassNames(LoggingFilter.class, GZIPContentEncodingFilter.class);
@@ -82,27 +74,8 @@ public class ResourceServletModule extends ServletModule {
         params.put(PackagesResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, RolesAllowedResourceFilterFactory.class.getName());
         params.put(GuiceContainer.RESOURCE_CONFIG_CLASS, "com.earaya.voodoo.VuduResourceConfig");
 
+        bind(VuduResourceConfig.class).toInstance(config);
         serve(rootPath + "/*").with(GuiceContainer.class, params);
-    }
-
-    private String joinPackageNames(List<String> packages) {
-        StringBuilder builder = new StringBuilder();
-
-        boolean first = true;
-        if (!Boolean.getBoolean(DISABLE_DEFAULT_FILTERS_PROPERTY)) {
-            builder.append("com.earaya.voodoo");
-            first = false;
-        }
-
-        for (String name : packages) {
-            if (first) {
-                first = false;
-            } else {
-                builder.append(",");
-            }
-            builder.append(name);
-        }
-        return builder.toString();
     }
 
     @SuppressWarnings("rawtypes")
