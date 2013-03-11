@@ -7,7 +7,7 @@ import com.yammer.metrics.reporting.AdminServlet;
 
 import javax.inject.Singleton;
 
-public class VuduModule extends AbstractModule {
+public class VoodooModule extends AbstractModule {
 
     @Override
     protected void configure() {
