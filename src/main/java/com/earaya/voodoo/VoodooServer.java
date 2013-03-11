@@ -18,6 +18,7 @@
 package com.earaya.voodoo;
 
 import com.earaya.voodoo.config.HttpServerConfig;
+import com.earaya.voodoo.modules.VuduModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -34,6 +35,10 @@ import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class VoodooServer {
 
@@ -78,7 +83,9 @@ public class VoodooServer {
         context.addEventListener(new GuiceServletContextListener() {
             @Override
             protected Injector getInjector() {
-                return Guice.createInjector(modules);
+                ArrayList<Module> voodooModules = new ArrayList<>(Arrays.asList(modules));
+                voodooModules.add(new VuduModule());
+                return Guice.createInjector(voodooModules);
             }
         });
         return context;
