@@ -35,13 +35,13 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VuduServer {
+public class VoodooServer {
 
-    private static final transient Logger LOG = LoggerFactory.getLogger(VuduServer.class);
+    private static final transient Logger LOG = LoggerFactory.getLogger(VoodooServer.class);
     private final Server server;
     private final HttpServerConfig httpServerConfig;
 
-    public VuduServer(HttpServerConfig httpServerConfig) {
+    public VoodooServer(HttpServerConfig httpServerConfig) {
         this.httpServerConfig = httpServerConfig;
         server = new Server();
         server.addConnector(getConnector());
@@ -70,7 +70,7 @@ public class VuduServer {
 
     private ContextHandler getVoodooContextHandler(final Module[] modules) {
         // Question: Should we inject Jetty's GzipHandler here by default? Will this conflict with the JersyGzip stuff
-        // in ResourceServletModule?
+        // in ApiModule?
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
         context.addServlet(DefaultServlet.class, "/");

@@ -17,7 +17,9 @@
 
 package com.earaya.voodoo.modules;
 
-import com.earaya.voodoo.VuduResourceConfig;
+import com.earaya.voodoo.ApiConfig;
+import com.earaya.voodoo.ObjectMapperProvider;
+import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
 import com.google.inject.servlet.ServletModule;
@@ -26,19 +28,18 @@ import com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-public class ResourceServletModule extends ServletModule {
+public class ApiModule extends ServletModule {
 
-    private final VuduResourceConfig config;
-    private String rootPath = "";
+    private final ApiConfig config;
+    private final String rootPath;
 
     static {
         // Jersey uses java.util.logging, so here we bridge to slf4
@@ -51,17 +52,18 @@ public class ResourceServletModule extends ServletModule {
         SLF4JBridgeHandler.install();
     }
 
-    public ResourceServletModule(VuduResourceConfig config) {
-        this.config = config;
+    public ApiModule(ApiConfig config) {
+        this(config, "");
     }
 
-    public ResourceServletModule root(String rootPath) {
+    public ApiModule(ApiConfig config, String rootPath) {
+        this.config = config;
         this.rootPath = rootPath;
-        return this;
     }
 
     @Override
     protected void configureServlets() {
+        // TODO: These settings should be moved to ApiConfig. Only the bind and serv calls should be here.
         final Map<String, String> params = new HashMap<>();
         params.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE.toString());
 
@@ -72,9 +74,9 @@ public class ResourceServletModule extends ServletModule {
         params.put(PackagesResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, responseFilters);
 
         params.put(PackagesResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, RolesAllowedResourceFilterFactory.class.getName());
-        params.put(GuiceContainer.RESOURCE_CONFIG_CLASS, "com.earaya.voodoo.VuduResourceConfig");
+        params.put(GuiceContainer.RESOURCE_CONFIG_CLASS, "com.earaya.voodoo.ApiConfig");
 
-        bind(VuduResourceConfig.class).toInstance(config);
+        bind(ApiConfig.class).toInstance(config);
         serve(rootPath + "/*").with(GuiceContainer.class, params);
     }
 

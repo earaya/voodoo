@@ -16,13 +16,13 @@
 package com.earaya.voodoo.apitest;
 
 
-import com.earaya.voodoo.VuduResourceConfig;
-import com.earaya.voodoo.VuduServer;
+import com.earaya.voodoo.ApiConfig;
+import com.earaya.voodoo.VoodooServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
 import com.earaya.voodoo.modules.GenericServerInfoModule;
-import com.earaya.voodoo.modules.ResourceServletModule;
+import com.earaya.voodoo.modules.ApiModule;
 import com.google.inject.Module;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -44,7 +44,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
     private final String expectedServerAgent = "myServer";
 
     int httpPort;
-    VuduServer embeddedServer;
+    VoodooServer embeddedServer;
     HttpClient httpClient = new DefaultHttpClient();
 
     @Before
@@ -52,9 +52,9 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         System.setProperty(GenericServerInfoModule.SERVER_IDENTIFIER_PROPERTY, expectedServerAgent);
         httpPort = findFreePort();
         Module[] modules = {
-                new ResourceServletModule(new VuduResourceConfig("com.earaya.voodoo.apitest")),
+                new ApiModule(new ApiConfig("com.earaya.voodoo.apitest")), // Sets up resources.("com.earaya.voodoo.apitest")),
                 new GenericServerInfoModule()};
-        embeddedServer = new VuduServer(new HttpServerConfig(httpPort));
+        embeddedServer = new VoodooServer(new HttpServerConfig(httpPort));
         embeddedServer.initialize(modules);
         embeddedServer.start();
     }
