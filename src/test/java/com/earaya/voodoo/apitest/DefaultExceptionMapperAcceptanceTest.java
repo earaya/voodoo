@@ -17,7 +17,7 @@ package com.earaya.voodoo.apitest;
 
 import com.earaya.voodoo.VoodooServer;
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.earaya.voodoo.modules.ApiModule;
+import com.earaya.voodoo.ApiModule;
 import com.google.inject.Module;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -47,10 +47,7 @@ public class DefaultExceptionMapperAcceptanceTest {
     @Before
     public void setUp() throws Exception {
         httpPort = findFreePort();
-        Module[] modules = {
-                new ApiModule("com.earaya.voodoo.apitest")};
-        embeddedServer = new VoodooServer(new HttpServerConfig(httpPort));
-        embeddedServer.initialize(modules);
+        embeddedServer = new VoodooServer(new HttpServerConfig(httpPort), new ApiModule("com.earaya.voodoo.apitest"));
         embeddedServer.start();
     }
 

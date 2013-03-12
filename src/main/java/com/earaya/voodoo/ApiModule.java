@@ -15,25 +15,36 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.modules;
+package com.earaya.voodoo;
 
-import com.earaya.voodoo.ObjectMapperProvider;
-import com.earaya.voodoo.VoodoServletContainer;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.servlet.GuiceFilter;
+import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.container.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-public class ApiModule extends ServletModule {
+public class ApiModule {
 
     private final PackagesResourceConfig resourceConfig;
+    private List<Module> modules = new ArrayList<>();
     private String rootPath = "";
 
     static {
@@ -62,10 +73,26 @@ public class ApiModule extends ServletModule {
         return this;
     }
 
-    @Override
-    protected void configureServlets() {
-        bind(PackagesResourceConfig.class).toInstance(resourceConfig);
-        serve(rootPath + "/*").with(VoodoServletContainer.class);
+    public ApiModule module(Module module) {
+        modules.add(module);
+        return this;
+    }
+
+    public void start(VoodooServer server) {
+        HandlerCollection handlerCollection = (HandlerCollection) server.server.getHandler();
+        handlerCollection.addHandler(getHandler());
+    }
+
+    private ContextHandler getHandler() {
+        ServletContextHandler context = new ServletContextHandler();
+        context.setContextPath("/");
+
+        context.addServlet(DefaultServlet.class, "/");
+
+        context.addServlet(new ServletHolder(new VoodoServletContainer(resourceConfig, Guice.createInjector(modules))), rootPath + "/*");
+        context.addFilter(GuiceFilter.class, "/*", null);
+
+        return context;
     }
 
     private void setupResourceConfig() {

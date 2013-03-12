@@ -38,18 +38,18 @@ import org.slf4j.LoggerFactory;
 public class VoodooServer {
 
     private static final transient Logger LOG = LoggerFactory.getLogger(VoodooServer.class);
-    private final Server server;
+    final Server server;
     private final HttpServerConfig httpServerConfig;
+    private final ApiModule apiModule;
 
-    public VoodooServer(HttpServerConfig httpServerConfig) {
+    public VoodooServer(HttpServerConfig httpServerConfig, ApiModule apiModule) {
+        this.apiModule = apiModule;
         this.httpServerConfig = httpServerConfig;
+
         server = new Server();
         server.addConnector(getConnector());
-    }
 
-    public void initialize(final Module[] modules) {
         HandlerCollection handlerCollection = new HandlerCollection();
-        handlerCollection.addHandler(getVoodooContextHandler(modules));
         server.setHandler(handlerCollection);
     }
 
@@ -58,28 +58,12 @@ public class VoodooServer {
         LOG.info("Starting http server on port {}", httpServerConfig.getPort());
 
         try {
+            apiModule.start(this);
             server.start();
         } catch (Exception e) {
             LOG.error("Error starting HTTP Server", e);
             throw e;
         }
-    }
-
-    private ContextHandler getVoodooContextHandler(final Module[] modules) {
-        // Question: Should we inject Jetty's GzipHandler here by default? Will this conflict with the JersyGzip stuff
-        // in ApiModule?
-        ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/");
-        context.addServlet(DefaultServlet.class, "/");
-        context.addFilter(GuiceFilter.class, "/*", null);
-        context.addEventListener(new GuiceServletContextListener() {
-
-            @Override
-            protected Injector getInjector() {
-                return Guice.createInjector(modules);
-            }
-        });
-        return context;
     }
 
     public boolean isRunning() {
