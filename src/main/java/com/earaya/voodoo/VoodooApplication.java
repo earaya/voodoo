@@ -17,34 +17,27 @@
 
 package com.earaya.voodoo;
 
+import com.earaya.voodoo.components.Component;
+import com.earaya.voodoo.components.RestComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.servlet.GuiceFilter;
-import com.google.inject.servlet.GuiceServletContextListener;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VoodooServer {
+public class VoodooApplication {
 
-    private static final transient Logger LOG = LoggerFactory.getLogger(VoodooServer.class);
-    final Server server;
+    private static final transient Logger LOG = LoggerFactory.getLogger(VoodooApplication.class);
+    public final Server server;
     private final HttpServerConfig httpServerConfig;
-    private final ApiModule apiModule;
+    private final Component[] components;
 
-    public VoodooServer(HttpServerConfig httpServerConfig, ApiModule apiModule) {
-        this.apiModule = apiModule;
+    public VoodooApplication(HttpServerConfig httpServerConfig, Component... components) {
         this.httpServerConfig = httpServerConfig;
+        this.components = components;
 
         server = new Server();
         server.addConnector(getConnector());
@@ -58,7 +51,9 @@ public class VoodooServer {
         LOG.info("Starting http server on port {}", httpServerConfig.getPort());
 
         try {
-            apiModule.start(this);
+            for(Component component : components) {
+                component.start(this);
+            }
             server.start();
         } catch (Exception e) {
             LOG.error("Error starting HTTP Server", e);

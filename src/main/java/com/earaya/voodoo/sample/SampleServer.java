@@ -1,19 +1,19 @@
 package com.earaya.voodoo.sample;
 
 
-import com.earaya.voodoo.VoodooServer;
+import com.earaya.voodoo.components.RestComponent;
+import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.auth.basic.BasicAuthProvider;
+import com.earaya.voodoo.components.StaticComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.earaya.voodoo.ApiModule;
 import com.earaya.voodoo.modules.MetricsModule;
-import com.google.inject.Module;
 
 public class SampleServer {
     public static void main(String[] args) throws Exception {
-        ApiModule module = new ApiModule("com.earaya.voodoo.sample").module(new MetricsModule());
+        RestComponent module = new RestComponent("com.earaya.voodoo.sample").module(new MetricsModule());
         module.addProvider(new BasicAuthProvider<SampleUser>(new SampleAuthenticator(), "realm"));
 
-        VoodooServer vuduServer = new VoodooServer(new HttpServerConfig(8080), module);
+        VoodooApplication vuduServer = new VoodooApplication(new HttpServerConfig(8080), new StaticComponent("."), module);
         vuduServer.start();
     }
 }

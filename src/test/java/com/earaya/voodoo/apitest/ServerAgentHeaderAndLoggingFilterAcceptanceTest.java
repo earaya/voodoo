@@ -16,11 +16,10 @@
 package com.earaya.voodoo.apitest;
 
 
-import com.earaya.voodoo.VoodooServer;
+import com.earaya.voodoo.components.RestComponent;
+import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
-import com.earaya.voodoo.ApiModule;
-import com.google.inject.Module;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -40,13 +39,13 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
     private final String expectedServerAgent = "myServer";
 
     int httpPort;
-    VoodooServer embeddedServer;
+    VoodooApplication embeddedServer;
     HttpClient httpClient = new DefaultHttpClient();
 
     @Before
     public void setUp() throws Exception {
         httpPort = findFreePort();
-        embeddedServer = new VoodooServer(new HttpServerConfig(httpPort), new ApiModule("com.earaya.voodoo.apitest"));
+        embeddedServer = new VoodooApplication(new HttpServerConfig(httpPort), new RestComponent("com.earaya.voodoo.apitest"));
         embeddedServer.start();
     }
 
