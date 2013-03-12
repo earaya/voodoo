@@ -1,25 +1,25 @@
 package com.earaya.voodoo.sample;
 
-import com.earaya.voodoo.VuduResourceConfig;
-import com.earaya.voodoo.VuduServer;
+
+import com.earaya.voodoo.VoodooServer;
 import com.earaya.voodoo.auth.basic.BasicAuthProvider;
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.earaya.voodoo.modules.GenericServerInfoModule;
-import com.earaya.voodoo.modules.ResourceServletModule;
-import com.earaya.voodoo.modules.VuduModule;
+import com.earaya.voodoo.modules.ApiModule;
+import com.earaya.voodoo.modules.MetricsModule;
 import com.google.inject.Module;
 
 public class SampleServer {
     public static void main(String[] args) throws Exception {
 
-        VuduResourceConfig config = new VuduResourceConfig();
-        config.addSingleton(new BasicAuthProvider<SampleUser>(new SampleAuthenticator(), "realm"));
+        //ApiConfig config = new ApiConfig();
+        //config.addProvider();
+        ApiModule module = new ApiModule("com.earaya.voodoo.sample");
+        module.addProvider(new BasicAuthProvider<SampleUser>(new SampleAuthenticator(), "realm"));
 
-        VuduServer vuduServer = new VuduServer(new HttpServerConfig(8080));
-        vuduServer.initialize(new Module[]{
-                new VuduModule(config), // Magic.
-                new ResourceServletModule("com.earaya.voodoo.sample"), // Sets up resources.
-                new GenericServerInfoModule() // Some server info.
+        VoodooServer vuduServer = new VoodooServer(new HttpServerConfig(8080));
+        vuduServer.initialize(new Module[] {
+                new MetricsModule(),
+                module // Sets up resources.
         });
         vuduServer.start();
     }

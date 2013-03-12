@@ -17,26 +17,24 @@
 
 package com.earaya.voodoo.modules;
 
-import com.earaya.voodoo.config.ApiConfig;
+import com.earaya.voodoo.ObjectMapperProvider;
+import com.earaya.voodoo.VoodoServletContainer;
+import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
-import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.container.filter.GZIPContentEncodingFilter;
-import com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
 public class ApiModule extends ServletModule {
 
-    private final ApiConfig config;
-    private final String rootPath;
+    private final PackagesResourceConfig resourceConfig;
+    private String rootPath = "";
 
     static {
         // Jersey uses java.util.logging, so here we bridge to slf4
@@ -49,46 +47,43 @@ public class ApiModule extends ServletModule {
         SLF4JBridgeHandler.install();
     }
 
-    public ApiModule(ApiConfig config) {
-        this(config, "");
+    public ApiModule(String... packageName) {
+        resourceConfig = new PackagesResourceConfig(packageName);
+        setupResourceConfig();
     }
 
-    public ApiModule(ApiConfig config, String rootPath) {
-        this.config = config;
+    public ApiModule addProvider(Object provider) {
+        resourceConfig.getSingletons().add(provider);
+        return this;
+    }
+
+    public ApiModule root(String rootPath) {
         this.rootPath = rootPath;
+        return this;
     }
 
     @Override
     protected void configureServlets() {
-        // TODO: These settings should be moved to ApiConfig. Only the bind and serv calls should be here.
-        final Map<String, String> params = new HashMap<>();
-        params.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE.toString());
-
-        String requestFilters = joinClassNames(LoggingFilter.class, GZIPContentEncodingFilter.class);
-        String responseFilters = joinClassNames(LoggingFilter.class, ServerAgentHeaderFilter.class, GZIPContentEncodingFilter.class);
-
-        params.put(PackagesResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, requestFilters);
-        params.put(PackagesResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, responseFilters);
-
-        params.put(PackagesResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, RolesAllowedResourceFilterFactory.class.getName());
-        params.put(GuiceContainer.RESOURCE_CONFIG_CLASS, "com.earaya.voodoo.config.ApiConfig");
-
-        bind(ApiConfig.class).toInstance(config);
-        serve(rootPath + "/*").with(GuiceContainer.class, params);
+        bind(PackagesResourceConfig.class).toInstance(resourceConfig);
+        serve(rootPath + "/*").with(VoodoServletContainer.class);
     }
 
-    @SuppressWarnings("rawtypes")
-    private String joinClassNames(Class... classes) {
-        StringBuilder builder = new StringBuilder("");
-        boolean first = true;
-        for (Class theClass : classes) {
-            if (first) {
-                first = false;
-            } else {
-                builder.append(",");
-            }
-            builder.append(theClass.getName());
-        }
-        return builder.toString();
+    private void setupResourceConfig() {
+        // Features
+        resourceConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+
+        // Request Filters
+        resourceConfig.getContainerRequestFilters().add(new LoggingFilter());
+        resourceConfig.getContainerRequestFilters().add(new GZIPContentEncodingFilter());
+
+        // Response Filters
+        resourceConfig.getContainerResponseFilters().add(new LoggingFilter());
+        resourceConfig.getContainerResponseFilters().add(new GZIPContentEncodingFilter());
+
+        // Voodoo "Providers"
+        resourceConfig.getSingletons().add(new ObjectMapperProvider());
+        resourceConfig.getSingletons().add(new DefaultExceptionMapper());
+        resourceConfig.getClasses().add(InstrumentedResourceMethodDispatchAdapter.class);
+        // TODO: Add validation provider so you can do @Valid.
     }
 }

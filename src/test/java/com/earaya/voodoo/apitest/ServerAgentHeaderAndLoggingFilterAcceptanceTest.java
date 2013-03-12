@@ -16,12 +16,9 @@
 package com.earaya.voodoo.apitest;
 
 
-import com.earaya.voodoo.config.ApiConfig;
 import com.earaya.voodoo.VoodooServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
-import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
-import com.earaya.voodoo.modules.GenericServerInfoModule;
 import com.earaya.voodoo.modules.ApiModule;
 import com.google.inject.Module;
 import org.apache.http.Header;
@@ -29,7 +26,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,19 +45,12 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
 
     @Before
     public void setUp() throws Exception {
-        System.setProperty(GenericServerInfoModule.SERVER_IDENTIFIER_PROPERTY, expectedServerAgent);
         httpPort = findFreePort();
         Module[] modules = {
-                new ApiModule(new ApiConfig("com.earaya.voodoo.apitest")), // Sets up resources.("com.earaya.voodoo.apitest")),
-                new GenericServerInfoModule()};
+                new ApiModule("com.earaya.voodoo.apitest")};
         embeddedServer = new VoodooServer(new HttpServerConfig(httpPort));
         embeddedServer.initialize(modules);
         embeddedServer.start();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        System.clearProperty(GenericServerInfoModule.SERVER_IDENTIFIER_PROPERTY);
     }
 
     @Test
@@ -70,7 +59,6 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         HttpResponse response = httpClient.execute(httpGet);
         assertEquals(404, response.getStatusLine().getStatusCode());
         assertVoodooResponseIdPresent(response);
-        assertServerAgentHeaderPresent(response);
     }
 
     @Test
@@ -79,7 +67,6 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         HttpResponse response = httpClient.execute(httpGet);
         assertEquals(200, response.getStatusLine().getStatusCode());
         assertVoodooResponseIdPresent(response);
-        assertServerAgentHeaderPresent(response);
     }
 
     @Test
@@ -88,7 +75,6 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
         HttpResponse response = httpClient.execute(httpGet);
         assertEquals(500, response.getStatusLine().getStatusCode());
         assertVoodooResponseIdPresent(response);
-        assertServerAgentHeaderPresent(response);
     }
 
     private int findFreePort() throws IOException {
@@ -100,11 +86,6 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
 
     private String getUrl(int port, String path) {
         return String.format("http://localhost:%d/%s", port, path);
-    }
-
-    private void assertServerAgentHeaderPresent(HttpResponse response) {
-        Header serverHeader = response.getFirstHeader(ServerAgentHeaderFilter.SERVER_AGENT_HEADER);
-        assertEquals(expectedServerAgent, serverHeader.getValue());
     }
 
     private void assertVoodooResponseIdPresent(HttpResponse response) {

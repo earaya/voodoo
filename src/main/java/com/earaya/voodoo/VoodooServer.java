@@ -18,7 +18,6 @@
 package com.earaya.voodoo;
 
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.earaya.voodoo.modules.MetricsModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -36,9 +35,6 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class VoodooServer {
 
     private static final transient Logger LOG = LoggerFactory.getLogger(VoodooServer.class);
@@ -51,11 +47,8 @@ public class VoodooServer {
         server.addConnector(getConnector());
     }
 
-    public void initialize(final Module[] modules, final ContextHandler... contextHandlers) {
-        HandlerCollection handlerCollection = new ContextHandlerCollection();
-        for (ContextHandler contextHandler : contextHandlers) {
-            handlerCollection.addHandler(contextHandler);
-        }
+    public void initialize(final Module[] modules) {
+        HandlerCollection handlerCollection = new HandlerCollection();
         handlerCollection.addHandler(getVoodooContextHandler(modules));
         server.setHandler(handlerCollection);
     }
@@ -80,6 +73,7 @@ public class VoodooServer {
         context.addServlet(DefaultServlet.class, "/");
         context.addFilter(GuiceFilter.class, "/*", null);
         context.addEventListener(new GuiceServletContextListener() {
+
             @Override
             protected Injector getInjector() {
                 return Guice.createInjector(modules);
