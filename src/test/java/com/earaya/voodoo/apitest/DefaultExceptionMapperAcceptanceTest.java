@@ -15,8 +15,8 @@
  */
 package com.earaya.voodoo.apitest;
 
-import com.earaya.voodoo.components.RestComponent;
 import com.earaya.voodoo.VoodooApplication;
+import com.earaya.voodoo.components.RestComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;

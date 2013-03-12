@@ -1,8 +1,8 @@
 {
-    "childConfig": {
-        "anInt": 4,
-        "aString": "myString"
-    },
-    "anInt": 3,
-    "aString": "aString"
+  "childConfig": {
+    "anInt": 4,
+    "aString": "myString"
+  },
+  "anInt": 3,
+  "aString": "aString"
 }

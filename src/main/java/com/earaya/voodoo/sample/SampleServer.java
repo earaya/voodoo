@@ -1,9 +1,9 @@
 package com.earaya.voodoo.sample;
 
 
-import com.earaya.voodoo.components.RestComponent;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.auth.basic.BasicAuthProvider;
+import com.earaya.voodoo.components.RestComponent;
 import com.earaya.voodoo.components.StaticComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.modules.MetricsModule;

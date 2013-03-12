@@ -18,7 +18,6 @@
 package com.earaya.voodoo;
 
 import com.earaya.voodoo.components.Component;
-import com.earaya.voodoo.components.RestComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -51,7 +50,7 @@ public class VoodooApplication {
         LOG.info("Starting http server on port {}", httpServerConfig.getPort());
 
         try {
-            for(Component component : components) {
+            for (Component component : components) {
                 component.start(this);
             }
             server.start();
