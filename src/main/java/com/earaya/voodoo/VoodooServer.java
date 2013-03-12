@@ -82,9 +82,7 @@ public class VoodooServer {
         context.addEventListener(new GuiceServletContextListener() {
             @Override
             protected Injector getInjector() {
-                ArrayList<Module> voodooModules = new ArrayList<>(Arrays.asList(modules));
-                voodooModules.add(new MetricsModule());
-                return Guice.createInjector(voodooModules);
+                return Guice.createInjector(modules);
             }
         });
         return context;
