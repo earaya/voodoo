@@ -18,7 +18,7 @@
 package com.earaya.voodoo;
 
 import com.earaya.voodoo.config.HttpServerConfig;
-import com.earaya.voodoo.modules.VoodooModule;
+import com.earaya.voodoo.modules.MetricsModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -83,7 +83,7 @@ public class VoodooServer {
             @Override
             protected Injector getInjector() {
                 ArrayList<Module> voodooModules = new ArrayList<>(Arrays.asList(modules));
-                voodooModules.add(new VoodooModule());
+                voodooModules.add(new MetricsModule());
                 return Guice.createInjector(voodooModules);
             }
         });

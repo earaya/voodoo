@@ -15,7 +15,7 @@
  */
 package com.earaya.voodoo.apitest;
 
-import com.earaya.voodoo.ApiConfig;
+import com.earaya.voodoo.config.ApiConfig;
 import com.earaya.voodoo.VoodooServer;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.modules.ApiModule;

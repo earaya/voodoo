@@ -1,5 +1,6 @@
-package com.earaya.voodoo;
+package com.earaya.voodoo.config;
 
+import com.earaya.voodoo.ObjectMapperProvider;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;

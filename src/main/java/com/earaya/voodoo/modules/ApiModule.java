@@ -17,9 +17,7 @@
 
 package com.earaya.voodoo.modules;
 
-import com.earaya.voodoo.ApiConfig;
-import com.earaya.voodoo.ObjectMapperProvider;
-import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
+import com.earaya.voodoo.config.ApiConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.filters.ServerAgentHeaderFilter;
 import com.google.inject.servlet.ServletModule;
@@ -28,7 +26,6 @@ import com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.HashMap;
@@ -74,7 +71,7 @@ public class ApiModule extends ServletModule {
         params.put(PackagesResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, responseFilters);
 
         params.put(PackagesResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, RolesAllowedResourceFilterFactory.class.getName());
-        params.put(GuiceContainer.RESOURCE_CONFIG_CLASS, "com.earaya.voodoo.ApiConfig");
+        params.put(GuiceContainer.RESOURCE_CONFIG_CLASS, "com.earaya.voodoo.config.ApiConfig");
 
         bind(ApiConfig.class).toInstance(config);
         serve(rootPath + "/*").with(GuiceContainer.class, params);
