@@ -1,5 +1,8 @@
 package com.earaya.voodoo.sample;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Created with IntelliJ IDEA.
  * SampleUser: earaya
@@ -11,5 +14,7 @@ public class SampleUser {
     public SampleUser() {
     }
 
+    @NotEmpty
+    @JsonProperty
     public String name = "test";
 }

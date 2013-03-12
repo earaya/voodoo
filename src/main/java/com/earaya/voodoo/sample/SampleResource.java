@@ -1,8 +1,10 @@
 package com.earaya.voodoo.sample;
 
 import com.earaya.voodoo.auth.Auth;
+import com.sun.jersey.core.header.MediaTypes;
 import com.yammer.metrics.annotation.Timed;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 
 /**
@@ -25,5 +27,13 @@ public class SampleResource {
         SampleUser u = new SampleUser();
         u.name = myName;
         return u;
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Produces(value = "application/json")
+    @Path("/echo")
+    public SampleUser respondWithUser(@Valid SampleUser user) {
+        return user;
     }
 }
