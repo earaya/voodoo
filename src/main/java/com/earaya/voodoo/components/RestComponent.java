@@ -17,7 +17,6 @@
 
 package com.earaya.voodoo.components;
 
-import com.earaya.voodoo.ObjectMapperProvider;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
@@ -34,6 +33,9 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.WebApplication;
 import com.sun.jersey.spi.container.servlet.WebConfig;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
+import org.codehaus.jackson.map.AnnotationIntrospector;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -45,6 +47,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -124,8 +128,7 @@ public class RestComponent implements Component {
         // TODO: Add validation provider so you can do @Valid.
     }
 
-    @Singleton
-    public static class VoodooServletContainer extends GuiceContainer {
+    private static class VoodooServletContainer extends GuiceContainer {
 
         private final ScanningResourceConfig resourceConfig;
         private final Injector injector;
@@ -146,6 +149,18 @@ public class RestComponent implements Component {
         @Override
         protected void initiate(ResourceConfig config, WebApplication webapp) {
             webapp.initiate(config, new ServletGuiceComponentProviderFactory(config, injector));
+        }
+    }
+
+    private static class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
+
+        @Override
+        public ObjectMapper getContext(Class<?> type) {
+            ObjectMapper mapper = new ObjectMapper();
+            AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
+            mapper.setDeserializationConfig(mapper.copyDeserializationConfig().withAnnotationIntrospector(introspector));
+            mapper.setSerializationConfig(mapper.copySerializationConfig().withAnnotationIntrospector(introspector));
+            return mapper;
         }
     }
 }
