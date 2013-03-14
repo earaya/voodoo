@@ -125,7 +125,6 @@ public class RestComponent implements Component {
         resourceConfig.getSingletons().add(new JacksonMessageBodyProvider(objectMapper, new Validator()));
         resourceConfig.getSingletons().add(new DefaultExceptionMapper());
         resourceConfig.getClasses().add(InstrumentedResourceMethodDispatchAdapter.class);
-        // TODO: Add validation provider so you can do @Valid.
     }
 
     private static class VoodooServletContainer extends GuiceContainer {
