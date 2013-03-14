@@ -76,7 +76,7 @@ public class RestComponent implements Component {
         setupResourceConfig();
     }
 
-    public RestComponent addProvider(Object provider) {
+    public RestComponent provider(Object provider) {
         resourceConfig.getSingletons().add(provider);
         return this;
     }
