@@ -29,13 +29,14 @@ public class StaticComponent implements Component {
     }
 
     private ContextHandler getHandler() {
+        int oneMonthInSeconds = 30 * 24 * 60 * 60;
         MimeTypes mimeTypes = new MimeTypes();
         mimeTypes.addMimeMapping("woff", "font/woff");
         mimeTypes.addMimeMapping("ttf", "font/ttf");
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setMimeTypes(mimeTypes);
-        resourceHandler.setCacheControl("max-age=432000,public");
+        resourceHandler.setCacheControl(String.format("max-age=%s,public", oneMonthInSeconds));
         resourceHandler.setResourceBase(filePath);
 
         GzipHandler gzipHandler = new GzipHandler();
