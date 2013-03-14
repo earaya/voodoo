@@ -98,10 +98,10 @@ public class RestComponent implements Component {
 
     private ContextHandler getHandler() {
         ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/");
+        context.setContextPath(rootPath);
 
         context.addServlet(DefaultServlet.class, "/");
-        context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, Guice.createInjector(modules))), rootPath + "/*");
+        context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, Guice.createInjector(modules))), "/*");
         context.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
 
         return context;
