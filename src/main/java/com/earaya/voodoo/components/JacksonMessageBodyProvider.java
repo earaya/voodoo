@@ -2,8 +2,10 @@ package com.earaya.voodoo.components;
 
 import com.earaya.voodoo.exceptions.InvalidEntityException;
 import com.earaya.voodoo.validation.Validated;
-import com.earaya.voodoo.validation.Validator;
+import com.earaya.voodoo.validation.ValidatorFacade;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
@@ -33,13 +35,12 @@ class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
      * The default group array used in case any of the validate methods is called without a group.
      */
     private static final Class<?>[] DEFAULT_GROUP_ARRAY = new Class<?>[]{ Default.class };
-    private final com.fasterxml.jackson.databind.ObjectMapper mapper;
-    private final Validator validator;
+    private static final com.fasterxml.jackson.databind.ObjectMapper JSON_MAPPER;
+    private final ValidatorFacade validatorFacade = new ValidatorFacade();
 
-    public JacksonMessageBodyProvider(com.fasterxml.jackson.databind.ObjectMapper mapper, Validator validator) {
-        this.validator = validator;
-        this.mapper = mapper;
-        setMapper(mapper);
+    static {
+        JSON_MAPPER = new ObjectMapper();
+        JSON_MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     @Override
@@ -69,7 +70,7 @@ class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
         final Class<?>[] classes = findValidationGroups(annotations);
 
         if (classes != null) {
-            final ImmutableList<String> errors = validator.validate(value, classes);
+            final ImmutableList<String> errors = validatorFacade.validate(value, classes);
             if (!errors.isEmpty()) {
                 throw new InvalidEntityException("The request entity had the following errors:",
                         errors);
@@ -104,6 +105,6 @@ class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     }
 
     public com.fasterxml.jackson.databind.ObjectMapper getObjectMapper() {
-        return mapper;
+        return JSON_MAPPER;
     }
 }

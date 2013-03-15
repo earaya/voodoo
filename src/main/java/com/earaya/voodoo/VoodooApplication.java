@@ -27,7 +27,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Need to invert this a bit so we can have a bootstrapping stage where we create the injector.
+// Question: Do we need to invert this a bit so we can have a bootstrapping stage where we create the injector?
 public class VoodooApplication {
 
     private static final transient Logger LOG = LoggerFactory.getLogger(VoodooApplication.class);
@@ -82,7 +82,7 @@ public class VoodooApplication {
         } else {
             SslContextFactory sslContextFactory = new SslContextFactory(httpServerConfig.getSslConfig().getKeyStorePath());
             sslContextFactory.setKeyStorePassword(httpServerConfig.getSslConfig().getKeyStorePassword());
-            sslContextFactory.setProtocol("TLSv1");
+            sslContextFactory.setProtocol("TLSv1.2");
             connector = new HTTPSPDYServerConnector(this.server, sslContextFactory);
         }
         connector.setPort(httpServerConfig.getPort());

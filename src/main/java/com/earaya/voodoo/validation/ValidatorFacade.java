@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Path;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import javax.validation.groups.Default;
 import java.util.Set;
 
@@ -17,15 +14,12 @@ import static java.lang.String.format;
 /**
  * A simple façade for Hibernate Validator.
  */
-public class Validator {
-    private final ValidatorFactory factory;
+public class ValidatorFacade {
+    private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
+    private static final Validator VALIDATOR;
 
-    public Validator() {
-        this(Validation.buildDefaultValidatorFactory());
-    }
-
-    public Validator(ValidatorFactory factory) {
-        this.factory = factory;
+    static {
+        VALIDATOR = VALIDATOR_FACTORY.getValidator();
     }
 
     /**
@@ -55,7 +49,7 @@ public class Validator {
             errors.add("request entity required");
         }
         else {
-            final Set<ConstraintViolation<T>> violations = factory.getValidator().validate(o,groups);
+            final Set<ConstraintViolation<T>> violations = VALIDATOR.validate(o,groups);
             for (ConstraintViolation<T> v : violations) {
                 if (v.getConstraintDescriptor().getAnnotation() instanceof ValidationMethod) {
                     final ImmutableList<Path.Node> nodes = ImmutableList.copyOf(v.getPropertyPath());

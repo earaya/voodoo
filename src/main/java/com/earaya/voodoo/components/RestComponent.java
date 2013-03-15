@@ -20,9 +20,6 @@ package com.earaya.voodoo.components;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
-import com.earaya.voodoo.validation.Validator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -39,7 +36,6 @@ import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -54,10 +50,11 @@ import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
+// Note: A bootstrapping phase would probably be better than asking for the injector.
 public class RestComponent implements Component {
 
     private final PackagesResourceConfig resourceConfig;
-    private List<Module> modules = new ArrayList<>();
+    private Injector injector = Guice.createInjector();
     private String rootPath = "";
 
     static {
@@ -86,8 +83,8 @@ public class RestComponent implements Component {
         return this;
     }
 
-    public RestComponent module(Module module) {
-        modules.add(module);
+    public RestComponent injector(Injector injector) {
+        this.injector = injector;
         return this;
     }
 
@@ -100,12 +97,13 @@ public class RestComponent implements Component {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath(rootPath);
 
-        context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, Guice.createInjector(modules))), "/*");
+        context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, injector)), "/*");
         context.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
 
         return context;
     }
 
+    // Question: Should we use the injector to construct these?
     private void setupResourceConfig() {
         // Features
         resourceConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
@@ -119,9 +117,7 @@ public class RestComponent implements Component {
         resourceConfig.getContainerResponseFilters().add(new GZIPContentEncodingFilter());
 
         // Voodoo "Providers"
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        resourceConfig.getSingletons().add(new JacksonMessageBodyProvider(objectMapper, new Validator()));
+        resourceConfig.getSingletons().add(new JacksonMessageBodyProvider());
         resourceConfig.getSingletons().add(new DefaultExceptionMapper());
         resourceConfig.getClasses().add(InstrumentedResourceMethodDispatchAdapter.class);
     }
