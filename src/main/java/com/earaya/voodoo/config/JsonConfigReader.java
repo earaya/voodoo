@@ -14,20 +14,20 @@ import java.io.IOException;
 
 public class JsonConfigReader {
 
-    private final JsonFactory jsonFactory;
-    private final ObjectMapper mapper;
+    private static final JsonFactory JSON_FACTORY;
+    private static final ObjectMapper JSON_MAPPER;
 
-    public JsonConfigReader() {
-        this.jsonFactory = new MappingJsonFactory();
-        jsonFactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
-        jsonFactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        jsonFactory.enable(JsonGenerator.Feature.QUOTE_FIELD_NAMES);
-        jsonFactory.enable(JsonParser.Feature.ALLOW_COMMENTS);
-        jsonFactory.enable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+    static {
+        JSON_FACTORY = new MappingJsonFactory();
+        JSON_FACTORY.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
+        JSON_FACTORY.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        JSON_FACTORY.enable(JsonGenerator.Feature.QUOTE_FIELD_NAMES);
+        JSON_FACTORY.enable(JsonParser.Feature.ALLOW_COMMENTS);
+        JSON_FACTORY.enable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 
-        this.mapper = (ObjectMapper) jsonFactory.getCodec();
-        mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
-        mapper.disable(DeserializationConfig.Feature.READ_ENUMS_USING_TO_STRING);
+        JSON_MAPPER = (ObjectMapper) JSON_FACTORY.getCodec();
+        JSON_MAPPER.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+        JSON_MAPPER.disable(DeserializationConfig.Feature.READ_ENUMS_USING_TO_STRING);
     }
 
     /**
@@ -39,8 +39,8 @@ public class JsonConfigReader {
      * @return the contents of {@code src} as an instance of {@code T}
      * @throws IOException if there is an error reading from {@code src} or parsing its contents
      */
-    public <T> T readValue(File src, Class<T> valueType) throws IOException {
-        return mapper.readValue(src, valueType);
+    public static <T> T readValue(File src, Class<T> valueType) throws IOException {
+        return JSON_MAPPER.readValue(src, valueType);
     }
 
     /**
@@ -52,7 +52,7 @@ public class JsonConfigReader {
      * @return the contents of {@code src} as an instance of {@code T}
      * @throws IOException if there is an error mapping {@code src} to {@code T}
      */
-    public <T> T readValue(JsonNode root, Class<T> klass) throws IOException {
-        return mapper.readValue(root, klass);
+    public static <T> T readValue(JsonNode root, Class<T> klass) throws IOException {
+        return JSON_MAPPER.readValue(root, klass);
     }
 }

@@ -7,24 +7,22 @@ import java.io.IOException;
 
 public class ConfigFactory<T> {
 
+    private final Class<T> configClass;
+
     public static <T> ConfigFactory<T> forClass(Class<T> configClass) {
         return new ConfigFactory<>(configClass);
     }
 
-    private final Class<T> configClass;
-    private final JsonConfigReader jsonConfigReader;
-
     public ConfigFactory(Class<T> configClass) {
         this.configClass = configClass;
-        this.jsonConfigReader = new JsonConfigReader();
     }
 
     public T buildConfig(File configFile) throws IOException {
         final JsonNode jsonNode = parse(configFile);
-        return jsonConfigReader.readValue(jsonNode, configClass);
+        return JsonConfigReader.readValue(jsonNode, configClass);
     }
 
     private JsonNode parse(File file) throws IOException {
-        return jsonConfigReader.readValue(file, JsonNode.class);
+        return JsonConfigReader.readValue(file, JsonNode.class);
     }
 }
