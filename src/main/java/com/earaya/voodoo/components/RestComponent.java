@@ -100,7 +100,6 @@ public class RestComponent implements Component {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath(rootPath);
 
-        context.addServlet(DefaultServlet.class, "/");
         context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, Guice.createInjector(modules))), "/*");
         context.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
 
@@ -127,6 +126,7 @@ public class RestComponent implements Component {
         resourceConfig.getClasses().add(InstrumentedResourceMethodDispatchAdapter.class);
     }
 
+    // NOTE: Tighten scope on some of these methods.
     private static class VoodooServletContainer extends GuiceContainer {
 
         private final ScanningResourceConfig resourceConfig;
