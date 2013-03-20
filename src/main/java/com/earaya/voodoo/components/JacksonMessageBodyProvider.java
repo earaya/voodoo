@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
  * com.fasterxml.jackson.annotation.JsonIgnoreType}.)
  */
 @Provider
-class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
+public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     /**
      * The default group array used in case any of the validate methods is called without a group.
      */
