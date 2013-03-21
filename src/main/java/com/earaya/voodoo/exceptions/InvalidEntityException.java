@@ -11,7 +11,7 @@ public class InvalidEntityException extends HttpException {
     private final ImmutableList<String> errors;
 
     public InvalidEntityException(String message, Iterable<String> errors) {
-        super(Response.Status.BAD_REQUEST, getMessageString(message, errors));
+        super(Response.Status.FORBIDDEN, getMessageString(message, errors));
         this.errors = ImmutableList.copyOf(errors);
     }
 
