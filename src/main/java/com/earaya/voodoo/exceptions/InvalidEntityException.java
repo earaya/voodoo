@@ -1,5 +1,6 @@
 package com.earaya.voodoo.exceptions;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 import javax.ws.rs.core.Response;
@@ -10,11 +11,15 @@ public class InvalidEntityException extends HttpException {
     private final ImmutableList<String> errors;
 
     public InvalidEntityException(String message, Iterable<String> errors) {
-        super(Response.Status.BAD_REQUEST, message);
+        super(Response.Status.BAD_REQUEST, getMessageString(message, errors));
         this.errors = ImmutableList.copyOf(errors);
     }
 
     public ImmutableList<String> getErrors() {
         return errors;
+    }
+
+    private static String getMessageString(String message, Iterable<String> errors) {
+        return message + "\nErrors:\n" + Joiner.on("\n").join(errors);
     }
 }

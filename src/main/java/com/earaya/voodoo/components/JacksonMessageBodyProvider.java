@@ -6,8 +6,8 @@ import com.earaya.voodoo.validation.ValidatorFacade;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.google.common.collect.ImmutableList;
 
 import javax.validation.Valid;
 import javax.validation.groups.Default;
@@ -72,7 +72,7 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
         if (classes != null) {
             final ImmutableList<String> errors = validatorFacade.validate(value, classes);
             if (!errors.isEmpty()) {
-                throw new InvalidEntityException("The request entity had the following errors:",
+                throw new InvalidEntityException("The request entity is not valid",
                         errors);
             }
         }
