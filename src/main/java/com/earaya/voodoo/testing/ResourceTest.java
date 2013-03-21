@@ -31,7 +31,20 @@ public abstract class ResourceTest extends PowerMockTestCase {
     }
 
     @BeforeClass
-    public final void setUpJersey() throws Exception {
+    @Override
+    protected void beforePowerMockTestClass() throws Exception {
+        super.beforePowerMockTestClass();
+        setUpJersey();
+    }
+
+    @AfterClass
+    @Override
+    protected void afterPowerMockTestClass() throws Exception {
+        super.afterPowerMockTestClass();
+        tearDownJersey();
+    }
+
+    protected void setUpJersey() throws Exception {
         setUpResources();
 
         this.test = new JerseyTest() {
@@ -55,8 +68,7 @@ public abstract class ResourceTest extends PowerMockTestCase {
         test.setUp();
     }
 
-    @AfterClass
-    public final void tearDownJersey() throws Exception {
+    protected void tearDownJersey() throws Exception {
         if (test != null) {
             test.tearDown();
         }
