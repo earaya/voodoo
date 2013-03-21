@@ -55,7 +55,7 @@ public class RestComponent implements Component {
 
     private final PackagesResourceConfig resourceConfig;
     private Injector injector = Guice.createInjector();
-    private String rootPath = "";
+    private String rootPath = "/";
 
     static {
         // Jersey uses java.util.logging, so here we bridge to slf4

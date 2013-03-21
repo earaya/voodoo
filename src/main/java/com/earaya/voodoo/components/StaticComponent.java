@@ -11,7 +11,7 @@ import org.eclipse.jetty.servlets.gzip.GzipHandler;
 
 public class StaticComponent implements Component {
     private final String filePath;
-    private String rootPath = "";
+    private String rootPath = "/";
 
     public StaticComponent(String filePath) {
         this.filePath = filePath;
