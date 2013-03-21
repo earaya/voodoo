@@ -43,18 +43,15 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-// Note: A bootstrapping phase would probably be better than asking for the injector.
 public class RestComponent implements Component {
 
     private final PackagesResourceConfig resourceConfig;
-    private Injector injector = Guice.createInjector();
+    private final Injector injector;
     private String rootPath = "/";
 
     static {
@@ -68,9 +65,15 @@ public class RestComponent implements Component {
         SLF4JBridgeHandler.install();
     }
 
-    public RestComponent(String... packageName) {
+    public RestComponent(String packageName, Module... modules) {
         resourceConfig = new PackagesResourceConfig(packageName);
+        injector = Guice.createInjector(modules);
         setupResourceConfig();
+    }
+
+    public RestComponent provider(Class provider) {
+        resourceConfig.getSingletons().add(injector.getInstance(provider));
+        return this;
     }
 
     public RestComponent provider(Object provider) {
@@ -80,11 +83,6 @@ public class RestComponent implements Component {
 
     public RestComponent root(String rootPath) {
         this.rootPath = rootPath;
-        return this;
-    }
-
-    public RestComponent injector(Injector injector) {
-        this.injector = injector;
         return this;
     }
 
@@ -116,7 +114,7 @@ public class RestComponent implements Component {
         resourceConfig.getContainerResponseFilters().add(new LoggingFilter());
         resourceConfig.getContainerResponseFilters().add(new GZIPContentEncodingFilter());
 
-        // Voodoo "Providers"
+        // Voodoo Providers
         resourceConfig.getSingletons().add(new JacksonMessageBodyProvider());
         resourceConfig.getSingletons().add(new DefaultExceptionMapper());
         resourceConfig.getClasses().add(InstrumentedResourceMethodDispatchAdapter.class);

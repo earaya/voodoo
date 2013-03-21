@@ -27,7 +27,6 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// Question: Do we need to invert this a bit so we can have a bootstrapping stage where we create the injector?
 public class VoodooApplication {
 
     private static final transient Logger LOG = LoggerFactory.getLogger(VoodooApplication.class);
