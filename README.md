@@ -1,8 +1,10 @@
 // TODO: This needs to be updated to show changes.
 
 Voodoo is basically some glue code pulling together some great libraries in
-very much the same mould as [Dropwizard](https://github.com/codahale/dropwizard). 
-These libraries include:
+very much the same mould as [Dropwizard](https://github.com/codahale/dropwizard).
+In fact, some of the code in here came straight from Dropwizard.
+
+The libraries included here are:
 
 * Jetty's HTTP server
 * Jersey's JAX-RS implementation  
@@ -14,25 +16,23 @@ These libraries include:
 Main Classes/Packages of note
 =============================
 
-### HttpServer and HttpServerConfig
+### VoodooApplication and Component
 
-Encapsulates the configuration and lifecycle of a HTTP server which is
-initialized with two servlet contexts:
+Encapsulates the configuration and lifecycle of an HTTP server which is
+initialized with `Components`.
+
+Two components provided are a `RestComponent` for Jersey API endpoints, and a `StaticComponent` for serving static assets.
+
+Please see the samples on how to use these components. You can also implement your own components. Please not that in case of path
+conflicts, the first component registered wins.
 
 The metrics context serves MetricsServlet straight from Yammer's excellent
 metrics-servlet project. Should you choose to use the various metrics-XXX 
 libraries to instrument your application any meters, gauges, timers etc that 
-you gather will be made available in JSON form from this context. If you
-don't collect any such metrics: a) you should be and b) you can still use 
-the metrics context to get a thread dump from your app over HTTP. 
-See https://github.com/codahale/metrics for the full glory of metrics
+you gather will be made available in JSON form from this context, you'll be able to access them by simply annotating your endpoints.
+Please look at [yammer-metrics](https://github.com/codahale/metrics) for more details.
 
-The root context is bound to a GuiceServletContextListener. Used in conjunction 
-with JerseyServletModule (see below), you can specify the packages containing
-your Jersey resources, which will then be served up under the root context.
-See the examples below for how to plug all this together.
-
-It's important to note that the HttpServer is hard-coded to use a [SPDY](http://www.chromium.org/spdy/spdy-whitepaper) 
+It's important to note that the HttpServer is hard-coded to use a [SPDY](http://www.chromium.org/spdy/spdy-whitepaper)
 connector since it'll degrade to HTTP if the client does not support SPDY. This, however, means that
 Voodoo requires Java 7.
 
@@ -45,11 +45,10 @@ in a JSON file.
 <!--- This could be extended to watch for changes to the config file and restart the server. 
 We could also allow an admin interface to change these values and then persist them to disk --->
 
-### ObjectMapperProvider
+### JacksonMessageBodyProvider
 
-Does a tiny amount of opinionated configuration to ensure that JSON output 
-generated via Jackson's JAXB and POJO conversions is pretty printed. This can
-be turned off by disabling the default filters in JerseyServletModule.
+The most important thing to know here is that this provider will validate representations annotated with `@Valid` and
+will return an error to the client if the representation fails validation.
 
 ### Exceptions
 
@@ -76,53 +75,25 @@ included in every log statement via logging config (see the example below).
 We use this extensively with log4j as the underlying logging provider, YMMV with
 other providers. A header containing this identifier is also added to the HTTP 
 response, which makes debugging much easier.
-   
-* ServerAgentHeaderFilter
- 
-Sets the Server header on HTTP responses to a value provided by an injected 
-ServerInfo implementation. How you generate this is obviously app specific (we tend
-to use a ServerInfo impl which reads from a properties file, created at build time).
-GenericServerInfoModule binds ServerInfo to an anonymous instance which reads the 
-desired String from a system property ( com.earaya.voodoo.modules.serverid )
- 
-### Guice
 
-The main article of interest here is JerseyServletModule. This takes a varargs of
-the package names which contain your Jersey resources and configures Jersey to 
-use Guice for dependency injection. It's also a bit opinionated, and configures
-the application with a standard set of filters and providers. The filters it adds
-are the three custom filters mentioned above, plus Jersey's GZIPEncodingFilter which
-provides conditional (de|en)coding of request and response entities based on the 
-Content-Encoding & Accept-Encoding headers in the request. The pretty-printing
-Jackson ObjectMapperProvider & exception formatting DefaultExceptionMapper (see above)
-are also registered with the application by default. 
-You can disable all of this default configuration by setting the system property
-com.earaya.voodoo.modules.disable-default-filters to "true".
-     
-Also in this package are a couple of modules which bind the authentication & server
-identifier implementations to defaults. So that if you don't care about these too
-much, include these modules.
-    
 Examples
 ========
 
-### Starting an HTTP Server
+### Starting an application
 
 ```java
-public static void main(String[] args) throws Exception {
-  System.setProperty("com.earaya.voodoo.modules.serverid", "AnExample");
-  Module[] modules =
-  	{
-                             new ApplicationModule(),                     // contains app specific bindings
-                             new NoopAuthenticationModule(),              // we don't need no stinking authentication
-                             new GenericServerInfoModule(),               // to set the Server response header 
-                             new JerseyServletModule("com.example.foo",   // packages containing  
-                                                     "com.example.bar")); // your JAX-RS resources
-	};
-  HttpServer webserver = new HttpServer(new HttpServerConfig(8080));
-  webserver.start(modules);    
+public class SampleApplication {
+    public static void main(String[] args) throws Exception {
+        RestComponent restComponent = new RestComponent("com.earaya.voodoo.sample").root("/api"); // Serves any resources in the package at /api
+        restComponent.provider(new BasicAuthProvider<SampleUser>(new SampleAuthenticator(), "realm")); // Add a Jersey provider to the component; in this case it does auth.
+        StaticComponent staticComponent = new StaticComponent(".").root("/static"); // Serves "this" folder under /static
+        VoodooApplication vuduServer = new VoodooApplication(new HttpServerConfig(8080), staticComponent, restComponent);
+        vuduServer.start();
+    }
 }
 ```
+
+Please look at the sample package for more detailed examples.
 
 ### Reading a JSON config file
 
