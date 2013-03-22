@@ -11,7 +11,7 @@
 
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
-    <name>core</name>
+    <name>Voodoo Core</name>
 
     <properties>
         <jetty.version>9.0.0.RC2</jetty.version>

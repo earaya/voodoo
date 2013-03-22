@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <artifactId>core</artifactId>
-            <groupId>com.earaya</groupId>
+            <groupId>com.earaya.voodoo</groupId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
