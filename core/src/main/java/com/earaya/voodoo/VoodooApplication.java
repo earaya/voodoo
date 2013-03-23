@@ -21,7 +21,9 @@ import com.earaya.voodoo.components.Component;
 import com.earaya.voodoo.config.HttpServerConfig;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
@@ -41,7 +43,7 @@ public class VoodooApplication {
         server = new Server();
         server.addConnector(getConnector());
 
-        HandlerCollection handlerCollection = new HandlerCollection();
+        ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
         server.setHandler(handlerCollection);
     }
 
