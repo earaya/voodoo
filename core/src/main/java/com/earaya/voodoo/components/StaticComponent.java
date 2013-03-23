@@ -12,6 +12,7 @@ import org.eclipse.jetty.servlets.gzip.GzipHandler;
 public class StaticComponent implements Component {
     private final String filePath;
     private String rootPath = "/";
+    int cacheAge = 30 * 24 * 60 * 60; // One month in seconds.
 
     public StaticComponent(String filePath) {
         this.filePath = filePath;
@@ -22,6 +23,11 @@ public class StaticComponent implements Component {
         return this;
     }
 
+    public StaticComponent cacheAge(int cacheAge) {
+        this.cacheAge = cacheAge;
+        return this;
+    }
+
     @Override
     public void start(VoodooApplication application) {
         HandlerCollection handlerCollection = (HandlerCollection) application.server.getHandler();
@@ -29,14 +35,13 @@ public class StaticComponent implements Component {
     }
 
     private ContextHandler getHandler() {
-        int oneMonthInSeconds = 30 * 24 * 60 * 60;
         MimeTypes mimeTypes = new MimeTypes();
         mimeTypes.addMimeMapping("woff", "font/woff");
         mimeTypes.addMimeMapping("ttf", "font/ttf");
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setMimeTypes(mimeTypes);
-        resourceHandler.setCacheControl(String.format("max-age=%s,public", oneMonthInSeconds));
+        resourceHandler.setCacheControl(String.format("max-age=%s,public", cacheAge));
         resourceHandler.setResourceBase(filePath);
 
         GzipHandler gzipHandler = new GzipHandler();
