@@ -38,9 +38,9 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
     @Override
     public ContainerRequest filter(ContainerRequest request) {
         MDC.put(REQUEST_UID, getRUID(8));
-        MDC.put(REQUEST_START_TIME, new Long(System.currentTimeMillis()));
+        MDC.put(REQUEST_START_TIME, System.currentTimeMillis());
         if (LOG.isInfoEnabled()) {
-            LOG.info(String.format("Starting request %s", request.getPath()));
+            LOG.info("Starting request {}", request.getPath());
         }
 
         return request;
@@ -48,13 +48,16 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 
     @Override
     public ContainerResponse filter(ContainerRequest request, ContainerResponse response) {
+	    String requestUid = (String) MDC.get(REQUEST_UID);
+	    response.getHttpHeaders().add(X_VOODOO_RESPONSE_ID, requestUid);
+
         Object object = MDC.get(REQUEST_START_TIME);
         if (object instanceof Long) {
-            Long startTime = (Long) object;
-            String requestUid = (String) MDC.get(REQUEST_UID);
-            long duration = System.currentTimeMillis() - startTime;
-            response.getHttpHeaders().add(X_VOODOO_RESPONSE_ID, requestUid);
-            LOG.info("Finished request in {} milliseconds.", duration);
+	        if (LOG.isInfoEnabled()) {
+		        Long startTime = (Long) object;
+		        long duration = System.currentTimeMillis() - startTime;
+		        LOG.info("Finished request in {} milliseconds.", duration);
+	        }
         } else {
             LOG.warn("Finished request, but did not have a start time to compare with. No metrics have been recorded.");
         }
