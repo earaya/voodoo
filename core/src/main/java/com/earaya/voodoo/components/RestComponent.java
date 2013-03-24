@@ -59,7 +59,9 @@ public class RestComponent implements Component {
         // This is a static initialiser because we don't want to do this multiple times.
         java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
         Handler[] handlers = rootLogger.getHandlers();
-        for (int i = 0; i < handlers.length; i++) {
+
+	    //noinspection ForLoopReplaceableByForEach
+	    for (int i = 0; i < handlers.length; i++) {
             rootLogger.removeHandler(handlers[i]);
         }
         SLF4JBridgeHandler.install();
@@ -75,7 +77,7 @@ public class RestComponent implements Component {
 		this(pkg.getName(), modules);
 	}
 
-    public RestComponent provider(Class provider) {
+    public RestComponent provider(Class<?> provider) {
         return provider(injector.getInstance(provider));
     }
 
@@ -105,6 +107,7 @@ public class RestComponent implements Component {
     }
 
     // Question: Should we use the injector to construct these?
+    @SuppressWarnings("unchecked")
     private void setupResourceConfig() {
         // Features
         resourceConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
