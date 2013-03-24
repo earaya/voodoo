@@ -71,9 +71,12 @@ public class RestComponent implements Component {
         setupResourceConfig();
     }
 
+	public RestComponent(Package pkg, Module... modules) {
+		this(pkg.getName(), modules);
+	}
+
     public RestComponent provider(Class provider) {
-        resourceConfig.getSingletons().add(injector.getInstance(provider));
-        return this;
+        return provider(injector.getInstance(provider));
     }
 
     public RestComponent provider(Object provider) {
