@@ -109,13 +109,16 @@ public class RestComponent implements Component {
         // Features
         resourceConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 
-        // Request Filters
-        resourceConfig.getContainerRequestFilters().add(new LoggingFilter());
-        resourceConfig.getContainerRequestFilters().add(new GZIPContentEncodingFilter());
+	    final LoggingFilter loggingFilter = new LoggingFilter();
+	    final GZIPContentEncodingFilter encodingFilter = new GZIPContentEncodingFilter();
+
+	    // Request Filters
+        resourceConfig.getContainerRequestFilters().add(loggingFilter);
+        resourceConfig.getContainerRequestFilters().add(encodingFilter);
 
         // Response Filters
-        resourceConfig.getContainerResponseFilters().add(new LoggingFilter());
-        resourceConfig.getContainerResponseFilters().add(new GZIPContentEncodingFilter());
+        resourceConfig.getContainerResponseFilters().add(loggingFilter);
+        resourceConfig.getContainerResponseFilters().add(encodingFilter);
 
         // Voodoo Providers
         resourceConfig.getSingletons().add(new JacksonMessageBodyProvider());
