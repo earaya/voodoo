@@ -35,10 +35,12 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
     static final String REQUEST_START_TIME = "R_START_TIME";
     private final Random r = new Random();
 
+	private final ThreadLocal<Long> requestStartTime = new ThreadLocal<>();
+
     @Override
     public ContainerRequest filter(ContainerRequest request) {
         MDC.put(REQUEST_UID, getRUID(8));
-        MDC.put(REQUEST_START_TIME, System.currentTimeMillis());
+        requestStartTime.set(System.currentTimeMillis());
         if (LOG.isInfoEnabled()) {
             LOG.info("Starting request {}", request.getPath());
         }
@@ -51,10 +53,9 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 	    String requestUid = (String) MDC.get(REQUEST_UID);
 	    response.getHttpHeaders().add(X_VOODOO_RESPONSE_ID, requestUid);
 
-        Object object = MDC.get(REQUEST_START_TIME);
-        if (object instanceof Long) {
+        Long startTime = requestStartTime.get();
+        if (startTime != null) {
 	        if (LOG.isInfoEnabled()) {
-		        Long startTime = (Long) object;
 		        long duration = System.currentTimeMillis() - startTime;
 		        LOG.info("Finished request in {} milliseconds.", duration);
 	        }
