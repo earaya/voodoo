@@ -94,8 +94,7 @@ public class RestComponent implements Component {
     }
 
     public void start(VoodooApplication application) {
-        HandlerCollection handlerCollection = (HandlerCollection) application.server.getHandler();
-        handlerCollection.addHandler(getHandler());
+        application.handlerCollection.addHandler(getHandler());
     }
 
     private ContextHandler getHandler() {
@@ -106,7 +105,6 @@ public class RestComponent implements Component {
 
         context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, injector)), "/*");
         context.addFilter(GuiceFilter.class, "/*", dispatcherTypes);
-        //context.addFilter(LoggingFilter.class, "/*", dispatcherTypes);
         context.addFilter(GzipFilter.class, "/*", dispatcherTypes);
 
         return context;

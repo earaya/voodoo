@@ -32,9 +32,12 @@ import org.slf4j.LoggerFactory;
 public class VoodooApplication {
 
     private static final transient Logger LOG = LoggerFactory.getLogger(VoodooApplication.class);
-    public final Server server;
+    private final Server server;
     private final HttpServerConfig httpServerConfig;
     private final Component[] components;
+
+    // TODO: hide this and provide addHanlder method.
+    public final ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 
     public VoodooApplication(HttpServerConfig httpServerConfig, Component... components) {
         this.httpServerConfig = httpServerConfig;
@@ -43,7 +46,6 @@ public class VoodooApplication {
         server = new Server();
         server.addConnector(getConnector());
 
-        ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
         server.setHandler(handlerCollection);
     }
 
