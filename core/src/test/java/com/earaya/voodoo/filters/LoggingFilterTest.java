@@ -114,7 +114,7 @@ public class LoggingFilterTest {
 
         assertEquals(1, responseHeaders.size());
 
-        assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
+        assertHeaderValue(responseHeaders, ServletLoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class LoggingFilterTest {
 
         assertEquals(2, responseHeaders.size());
 
-        assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
+        assertHeaderValue(responseHeaders, ServletLoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
         assertHeaderValue(responseHeaders, "customheader1", "foo");
     }
 

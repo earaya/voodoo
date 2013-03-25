@@ -48,10 +48,13 @@ public class ServletLoggingFilter implements Filter {
 
     private void doFilter(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain) throws IOException, ServletException {
         final String ruid = ruidSupplier.get();
-        final long startTime = System.currentTimeMillis();
 
         MDC.put(REQUEST_UID, ruid);
+        if (!response.containsHeader(X_VOODOO_RESPONSE_ID)) {
+            response.addHeader(X_VOODOO_RESPONSE_ID, ruid);
+        }
 
+        final long startTime = System.currentTimeMillis();
         if (LOG.isInfoEnabled()) {
             LOG.info("Starting request {}", request.getRequestURI());
         }
@@ -65,10 +68,6 @@ public class ServletLoggingFilter implements Filter {
             }
             else {
                 LOG.warn("Finished request, but did not have a start time to compare with. No metrics have been recorded.");
-            }
-
-            if (!response.containsHeader(X_VOODOO_RESPONSE_ID)) {
-                response.addHeader(X_VOODOO_RESPONSE_ID, ruid);
             }
 
             // Cleanup MDC Variables

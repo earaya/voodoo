@@ -20,6 +20,7 @@ import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.components.RestComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
+import com.earaya.voodoo.filters.ServletLoggingFilter;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,7 +36,6 @@ import java.net.ServerSocket;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore
 public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
 
     private final String expectedServerAgent = "myServer";
@@ -87,7 +87,7 @@ public class ServerAgentHeaderAndLoggingFilterAcceptanceTest {
     }
 
     private void assertVoodooResponseIdPresent(HttpResponse response) {
-        Header voodooResponseId = response.getFirstHeader(LoggingFilter.X_VOODOO_RESPONSE_ID);
+        Header voodooResponseId = response.getFirstHeader(ServletLoggingFilter.X_VOODOO_RESPONSE_ID);
         assertNotNull(voodooResponseId);
     }
 }

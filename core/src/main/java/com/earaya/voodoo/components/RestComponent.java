@@ -25,7 +25,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
-import com.sun.jersey.api.container.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.api.core.ScanningResourceConfig;
@@ -34,9 +33,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.WebApplication;
 import com.sun.jersey.spi.container.servlet.WebConfig;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
-
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.GzipFilter;
@@ -105,6 +102,7 @@ public class RestComponent implements Component {
 
         context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, injector)), "/*");
         context.addFilter(GuiceFilter.class, "/*", dispatcherTypes);
+        context.addFilter(ServletLoggingFilter.class, "/*", dispatcherTypes);
         context.addFilter(GzipFilter.class, "/*", dispatcherTypes);
 
         return context;
