@@ -62,6 +62,8 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
         } else {
             LOG.warn("Finished request, but did not have a start time to compare with. No metrics have been recorded.");
         }
+	    // Finally cleanup ThreadLocal
+	    requestStartTime.remove();
         return response;
     }
 
