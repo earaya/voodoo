@@ -70,13 +70,21 @@ public class LoggingFilterTest {
     public static final int[] HTTP_SERVER_ERROR_CODES =
             new int[]{500, 501, 502, 503, 504, 505};
 
+    private String mockRUID;
     private LoggingFilter loggingFilter;
     private ContainerRequest mockRequest;
     private ContainerResponse mockResponse;
 
     @Before
     public void setup() {
-        loggingFilter = new LoggingFilter();
+
+        mockRUID = UUID.randomUUID().toString();
+
+        final RuidSupplier ruidSupplier = createNiceMock(RuidSupplier.class);
+        expect(ruidSupplier.get()).andReturn(mockRUID).anyTimes();
+        replay(ruidSupplier);
+
+        loggingFilter = new LoggingFilter(ruidSupplier);
 
         String randomPath = UUID.randomUUID().toString();
 
@@ -106,7 +114,7 @@ public class LoggingFilterTest {
 
         assertEquals(1, responseHeaders.size());
 
-        assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, MDC.get(LoggingFilter.REQUEST_UID));
+        assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
     }
 
     @Test
@@ -120,7 +128,7 @@ public class LoggingFilterTest {
 
         assertEquals(2, responseHeaders.size());
 
-        assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, MDC.get(LoggingFilter.REQUEST_UID));
+        assertHeaderValue(responseHeaders, LoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
         assertHeaderValue(responseHeaders, "customheader1", "foo");
     }
 

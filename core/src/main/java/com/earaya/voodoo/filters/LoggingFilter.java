@@ -16,6 +16,7 @@
 
 package com.earaya.voodoo.filters;
 
+import com.google.common.base.Supplier;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 import com.sun.jersey.spi.container.ContainerResponse;
@@ -24,8 +25,6 @@ import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Random;
-
 public class LoggingFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingFilter.class);
@@ -33,13 +32,21 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
     public static final String X_VOODOO_RESPONSE_ID = "X-VOODOO-RESPONSE-ID";
     public static final String REQUEST_UID = "R_UID";
     static final String REQUEST_START_TIME = "R_START_TIME";
-    private final Random r = new Random();
 
     private final ThreadLocal<Long> requestStartTime = new ThreadLocal<>();
+    private final Supplier<String> ruidSupplier;
+
+    public LoggingFilter() {
+        this(new RuidSupplier());
+    }
+
+    public LoggingFilter(Supplier<String> ruidSupplier) {
+        this.ruidSupplier = ruidSupplier;
+    }
 
     @Override
     public ContainerRequest filter(ContainerRequest request) {
-        MDC.put(REQUEST_UID, getRUID(8));
+        MDC.put(REQUEST_UID, ruidSupplier.get());
         requestStartTime.set(System.currentTimeMillis());
         if (LOG.isInfoEnabled()) {
             LOG.info("Starting request {}", request.getPath());
@@ -65,23 +72,5 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
         // Finally cleanup ThreadLocal
         requestStartTime.remove();
         return response;
-    }
-
-    private String getRUID(int len) {
-        StringBuffer uid = new StringBuffer();
-        for (int i = 0; i < len; i++) {
-            int rand = r.nextInt(10000);
-            int mod36 = rand % 36;
-            encodeAndAdd(uid, mod36);
-        }
-        return uid.toString();
-    }
-
-    private void encodeAndAdd(StringBuffer ret, long mod36Val) {
-        if (mod36Val < 10) {
-            ret.append((char) (((int) '0') + (int) mod36Val));
-        } else {
-            ret.append((char) (((int) 'a') + (int) (mod36Val - 10)));
-        }
     }
 }
