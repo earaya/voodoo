@@ -35,7 +35,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
     static final String REQUEST_START_TIME = "R_START_TIME";
     private final Random r = new Random();
 
-	private final ThreadLocal<Long> requestStartTime = new ThreadLocal<>();
+    private final ThreadLocal<Long> requestStartTime = new ThreadLocal<>();
 
     @Override
     public ContainerRequest filter(ContainerRequest request) {
@@ -50,20 +50,20 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 
     @Override
     public ContainerResponse filter(ContainerRequest request, ContainerResponse response) {
-	    String requestUid = (String) MDC.get(REQUEST_UID);
-	    response.getHttpHeaders().add(X_VOODOO_RESPONSE_ID, requestUid);
+        String requestUid = (String) MDC.get(REQUEST_UID);
+        response.getHttpHeaders().add(X_VOODOO_RESPONSE_ID, requestUid);
 
         Long startTime = requestStartTime.get();
         if (startTime != null) {
-	        if (LOG.isInfoEnabled()) {
-		        long duration = System.currentTimeMillis() - startTime;
-		        LOG.info("Finished request in {} milliseconds.", duration);
-	        }
+            if (LOG.isInfoEnabled()) {
+                long duration = System.currentTimeMillis() - startTime;
+                LOG.info("Finished request in {} milliseconds.", duration);
+            }
         } else {
             LOG.warn("Finished request, but did not have a start time to compare with. No metrics have been recorded.");
         }
-	    // Finally cleanup ThreadLocal
-	    requestStartTime.remove();
+        // Finally cleanup ThreadLocal
+        requestStartTime.remove();
         return response;
     }
 

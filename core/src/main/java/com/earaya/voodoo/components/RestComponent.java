@@ -60,8 +60,8 @@ public class RestComponent implements Component {
         java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
         Handler[] handlers = rootLogger.getHandlers();
 
-	    //noinspection ForLoopReplaceableByForEach
-	    for (int i = 0; i < handlers.length; i++) {
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < handlers.length; i++) {
             rootLogger.removeHandler(handlers[i]);
         }
         SLF4JBridgeHandler.install();
@@ -73,9 +73,9 @@ public class RestComponent implements Component {
         setupResourceConfig();
     }
 
-	public RestComponent(Package pkg, Module... modules) {
-		this(pkg.getName(), modules);
-	}
+    public RestComponent(Package pkg, Module... modules) {
+        this(pkg.getName(), modules);
+    }
 
     public RestComponent provider(Class<?> provider) {
         return provider(injector.getInstance(provider));
@@ -112,10 +112,10 @@ public class RestComponent implements Component {
         // Features
         resourceConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 
-	    final LoggingFilter loggingFilter = new LoggingFilter();
-	    final GZIPContentEncodingFilter encodingFilter = new GZIPContentEncodingFilter();
+        final LoggingFilter loggingFilter = new LoggingFilter();
+        final GZIPContentEncodingFilter encodingFilter = new GZIPContentEncodingFilter();
 
-	    // Request Filters
+        // Request Filters
         resourceConfig.getContainerRequestFilters().add(loggingFilter);
         resourceConfig.getContainerRequestFilters().add(encodingFilter);
 
