@@ -39,6 +39,7 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.GzipFilter;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javax.inject.Inject;
@@ -105,7 +106,8 @@ public class RestComponent implements Component {
 
         context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, injector)), "/*");
         context.addFilter(GuiceFilter.class, "/*", dispatcherTypes);
-        context.addFilter(ServletLoggingFilter.class, "/*", dispatcherTypes);
+        //context.addFilter(LoggingFilter.class, "/*", dispatcherTypes);
+        context.addFilter(GzipFilter.class, "/*", dispatcherTypes);
 
         return context;
     }
@@ -115,17 +117,6 @@ public class RestComponent implements Component {
     private void setupResourceConfig() {
         // Features
         resourceConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-
-        final LoggingFilter loggingFilter = new LoggingFilter();
-        final GZIPContentEncodingFilter encodingFilter = new GZIPContentEncodingFilter();
-
-        // Request Filters
-        resourceConfig.getContainerRequestFilters().add(loggingFilter);
-        resourceConfig.getContainerRequestFilters().add(encodingFilter);
-
-        // Response Filters
-        resourceConfig.getContainerResponseFilters().add(loggingFilter);
-        resourceConfig.getContainerResponseFilters().add(encodingFilter);
 
         // Voodoo Providers
         resourceConfig.getSingletons().add(new JacksonMessageBodyProvider());
