@@ -16,143 +16,103 @@
 
 package com.earaya.voodoo.filters;
 
+import com.earaya.voodoo.filters.answers.ContainsHeaderAnswer;
+import com.earaya.voodoo.filters.answers.GetHeaderAnswer;
+import com.earaya.voodoo.filters.answers.SetHeaderAnswer;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerResponse;
-import org.apache.log4j.MDC;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.List;
+import java.io.IOException;
 import java.util.UUID;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
-
-@RunWith(Theories.class)
+@RunWith(MockitoJUnitRunner.class)
 public class LoggingFilterTest {
 
-    @DataPoints
-    public static final int[] HTTP_SUCCESS_RESPONSE_CODES =
-            new int[]{200, 201, 202, 203, 204, 205, 206};
+    @Mock
+    private HttpServletRequest mockRequest;
+    @Mock
+    private HttpServletResponse mockResponse;
+    @Mock
+    private FilterChain mockFilterChain;
 
-    @DataPoints
-    public static final int[] HTTP_REDIRECT_RESPONSE_CODES =
-            new int[]{300, 301, 302, 303, 304, 305, 307};
-
-    @DataPoints
-    public static final int[] HTTP_CLIENT_ERROR_CODES =
-            new int[]{400,
-                    401,
-                    402,
-                    403,
-                    404,
-                    405,
-                    406,
-                    407,
-                    408,
-                    409,
-                    410,
-                    411,
-                    412,
-                    413,
-                    414,
-                    415,
-                    416,
-                    417};
-
-    @DataPoints
-    public static final int[] HTTP_SERVER_ERROR_CODES =
-            new int[]{500, 501, 502, 503, 504, 505};
-
-    private String mockRUID;
+    private String fakeRUID;
     private LoggingFilter loggingFilter;
-    private ContainerRequest mockRequest;
-    private ContainerResponse mockResponse;
+
+    MultivaluedMap<String, String> responseHeaders;
 
     @Before
     public void setup() {
+        responseHeaders = new MultivaluedMapImpl();
+        fakeRUID = UUID.randomUUID().toString();
 
-        mockRUID = UUID.randomUUID().toString();
-
-        final RuidSupplier ruidSupplier = createNiceMock(RuidSupplier.class);
-        expect(ruidSupplier.get()).andReturn(mockRUID).anyTimes();
-        replay(ruidSupplier);
+        final RuidSupplier ruidSupplier = mock(RuidSupplier.class);
+        when(ruidSupplier.get()).thenReturn(fakeRUID);
 
         loggingFilter = new LoggingFilter(ruidSupplier);
 
         String randomPath = UUID.randomUUID().toString();
 
-        mockRequest = createNiceMock(ContainerRequest.class);
-        expect(mockRequest.getPath()).andReturn(randomPath).anyTimes();
-        replay(mockRequest);
+        mockRequest = mock(HttpServletRequest.class);
+        when(mockRequest.getRequestURI()).thenReturn(randomPath);
 
-        mockResponse = createNiceMock(ContainerResponse.class);
-        MultivaluedMap<String, String> responseHeaders = new MultivaluedMapImpl();
-        mockResponse.getHttpHeaders();
-        expectLastCall().andReturn(responseHeaders).anyTimes();
-        replay(mockResponse);
 
+        mockResponse = mock(HttpServletResponse.class);
+        when(mockResponse.containsHeader(anyString())).thenAnswer(ContainsHeaderAnswer.create(responseHeaders));
+        when(mockResponse.getHeader(anyString())).thenAnswer(GetHeaderAnswer.create(responseHeaders));
+        doAnswer(SetHeaderAnswer.create(responseHeaders)).when(mockResponse).setHeader(anyString(), anyString());
+        doAnswer(SetHeaderAnswer.create(responseHeaders)).when(mockResponse).addHeader(anyString(), anyString());
     }
 
     @Test
-    public void afterHandleRecordsResponseTimeOnNodeMetrics() {
-        loggingFilter.filter(mockRequest);
-        loggingFilter.filter(mockRequest, mockResponse);
+    public void afterHandleRecordsResponseTimeOnNodeMetrics() throws IOException, ServletException {
+        loggingFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
     }
 
     @Test
-    public void xVoodooResponseIDReturnedWhenNoResponseHeadersExist() {
-        loggingFilter.filter(mockRequest);
-        loggingFilter.filter(mockRequest, mockResponse);
-        MultivaluedMap<String, Object> responseHeaders = mockResponse.getHttpHeaders();
+    public void xVoodooResponseIDReturnedWhenNoResponseHeadersExist() throws IOException, ServletException {
+        loggingFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
 
         assertEquals(1, responseHeaders.size());
 
-        assertHeaderValue(responseHeaders, ServletLoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
+        assertHeaderValue(mockResponse, LoggingFilter.X_VOODOO_RESPONSE_ID, fakeRUID);
     }
 
     @Test
-    public void xVoodooResponseIDReturnedWhenHeadersAlreadyExist() {
-        loggingFilter.filter(mockRequest);
+    public void xVoodooResponseIDReturnedWhenHeadersAlreadyExist() throws IOException, ServletException {
+        assertTrue(responseHeaders.isEmpty());
+        loggingFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
 
-        MultivaluedMap<String, Object> responseHeaders = mockResponse.getHttpHeaders();
-        responseHeaders.add("customheader1", "foo");
+        assertFalse(responseHeaders.isEmpty());
 
-        loggingFilter.filter(mockRequest, mockResponse);
+        mockResponse.setHeader("customheader1", "foo");
+
+        loggingFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
 
         assertEquals(2, responseHeaders.size());
 
-        assertHeaderValue(responseHeaders, ServletLoggingFilter.X_VOODOO_RESPONSE_ID, mockRUID);
-        assertHeaderValue(responseHeaders, "customheader1", "foo");
+        assertHeaderValue(mockResponse, LoggingFilter.X_VOODOO_RESPONSE_ID, fakeRUID);
+        assertHeaderValue(mockResponse, "customheader1", "foo");
     }
 
-    private void assertHeaderValue(MultivaluedMap<String, Object> responseHeaders, String headerName, Object expectedHeaderValue) {
-        assertTrue(responseHeaders.containsKey(headerName));
-        List<Object> headerValues = (List<Object>) responseHeaders.get(headerName);
-        assertEquals(1, headerValues.size());
-        Object requestId = headerValues.get(0);
-        assertNotNull(requestId);
-        assertEquals(expectedHeaderValue, requestId);
-    }
+    private void assertHeaderValue(final HttpServletResponse response, String headerName, Object expectedHeaderValue) {
+        assertTrue(response.containsHeader(headerName));
 
-    @Test
-    public void calculationOfDurationDoesntFailIfNoStartTimeRecorded() {
-        loggingFilter.filter(mockRequest);
-        MDC.remove(LoggingFilter.REQUEST_START_TIME);
-        loggingFilter.filter(mockRequest, mockResponse);
-    }
-
-    @Test
-    public void calculationOfDurationDoesntFailIfMDCIsAccidentallyCleared() {
-        loggingFilter.filter(mockRequest);
-        MDC.clear();
-        loggingFilter.filter(mockRequest, mockResponse);
+        final String header = response.getHeader(headerName);
+        assertNotNull(header);
+        assertEquals(expectedHeaderValue, header);
     }
 
 }

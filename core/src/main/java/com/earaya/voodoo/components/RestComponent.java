@@ -20,7 +20,6 @@ package com.earaya.voodoo.components;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
-import com.earaya.voodoo.filters.ServletLoggingFilter;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -102,7 +101,7 @@ public class RestComponent implements Component {
 
         context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, injector)), "/*");
         context.addFilter(GuiceFilter.class, "/*", dispatcherTypes);
-        context.addFilter(ServletLoggingFilter.class, "/*", dispatcherTypes);
+        context.addFilter(LoggingFilter.class, "/*", dispatcherTypes);
         context.addFilter(GzipFilter.class, "/*", dispatcherTypes);
 
         return context;
