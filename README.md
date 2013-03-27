@@ -1,5 +1,7 @@
 // TODO: This needs to be updated to show changes.
 
+[![Build Status](https://buildhive.cloudbees.com/job/earaya/job/voodoo/badge/icon)](https://buildhive.cloudbees.com/job/earaya/job/voodoo/)
+
 Voodoo is basically some glue code pulling together some great libraries in
 very much the same mould as [Dropwizard](https://github.com/codahale/dropwizard).
 In fact, some of the code in here came straight from Dropwizard.
