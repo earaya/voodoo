@@ -1,7 +1,6 @@
 package com.earaya.voodoosample;
 
 import com.earaya.voodoo.auth.Auth;
-import com.sun.jersey.core.header.MediaTypes;
 import com.yammer.metrics.annotation.Timed;
 
 import javax.validation.Valid;

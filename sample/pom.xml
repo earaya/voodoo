@@ -19,5 +19,11 @@
             <groupId>com.earaya</groupId>
             <version>${project.parent.version}</version>
         </dependency>
+
+        <dependency>
+            <artifactId>voodoo-auth</artifactId>
+            <groupId>com.earaya</groupId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 </project>

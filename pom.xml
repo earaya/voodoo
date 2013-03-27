@@ -39,6 +39,7 @@
         <module>sample</module>
         <module>core</module>
         <module>testing</module>
+        <module>auth</module>
     </modules>
 
     <dependencyManagement>
