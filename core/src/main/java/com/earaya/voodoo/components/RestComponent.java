@@ -20,6 +20,8 @@ package com.earaya.voodoo.components;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
+import com.earaya.voodoo.resources.VoodooApiListing;
+import com.google.common.base.Strings;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -31,6 +33,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.WebApplication;
 import com.sun.jersey.spi.container.servlet.WebConfig;
+import com.wordnik.swagger.jaxrs.JaxrsApiReader;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -51,6 +54,8 @@ public class RestComponent implements Component {
     private final PackagesResourceConfig resourceConfig;
     private final Injector injector;
     private String rootPath = "/";
+    private String version = "";
+    private Class<?> apiDocClass = VoodooApiListing.class;
 
     static {
         // Jersey uses java.util.logging, so here we bridge to slf4
@@ -63,6 +68,7 @@ public class RestComponent implements Component {
             rootLogger.removeHandler(handlers[i]);
         }
         SLF4JBridgeHandler.install();
+        JaxrsApiReader.setFormatString("");
     }
 
     public RestComponent(String packageName, Module... modules) {
@@ -84,8 +90,18 @@ public class RestComponent implements Component {
         return this;
     }
 
+    public RestComponent version(String version) {
+        this.version = version;
+        return this;
+    }
+
     public RestComponent root(String rootPath) {
         this.rootPath = rootPath;
+        return this;
+    }
+
+    public RestComponent apiDocClass(Class<?> apiDocClass) {
+        this.apiDocClass = apiDocClass;
         return this;
     }
 
@@ -97,9 +113,18 @@ public class RestComponent implements Component {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath(rootPath);
 
-        final EnumSet<DispatcherType> dispatcherTypes = EnumSet.allOf(DispatcherType.class);
+        ServletHolder h = new ServletHolder(new VoodooServletContainer(resourceConfig, injector));
 
-        context.addServlet(new ServletHolder(new VoodooServletContainer(resourceConfig, injector)), "/*");
+        if (null != apiDocClass) {
+            resourceConfig.getClasses().add(apiDocClass);
+            h.setInitParameter("swagger.api.basepath", rootPath);
+            if (!Strings.isNullOrEmpty(version)) {
+                h.setInitParameter("api.version", version);
+            }
+        }
+
+        final EnumSet<DispatcherType> dispatcherTypes = EnumSet.allOf(DispatcherType.class);
+        context.addServlet(h, "/*");
         context.addFilter(GuiceFilter.class, "/*", dispatcherTypes);
         context.addFilter(LoggingFilter.class, "/*", dispatcherTypes);
         context.addFilter(GzipFilter.class, "/*", dispatcherTypes);
