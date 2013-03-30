@@ -57,20 +57,6 @@ public class RestComponent implements Component {
     private String version = "";
     private Class<?> apiDocClass = VoodooApiListing.class;
 
-    static {
-        // Jersey uses java.util.logging, so here we bridge to slf4
-        // This is a static initialiser because we don't want to do this multiple times.
-        java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
-        Handler[] handlers = rootLogger.getHandlers();
-
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < handlers.length; i++) {
-            rootLogger.removeHandler(handlers[i]);
-        }
-        SLF4JBridgeHandler.install();
-        JaxrsApiReader.setFormatString("");
-    }
-
     public RestComponent(String packageName, Module... modules) {
         resourceConfig = new PackagesResourceConfig(packageName);
         injector = Guice.createInjector(modules);
@@ -132,7 +118,6 @@ public class RestComponent implements Component {
         return context;
     }
 
-    // Question: Should we use the injector to construct these?
     @SuppressWarnings("unchecked")
     private void setupResourceConfig() {
         // Features

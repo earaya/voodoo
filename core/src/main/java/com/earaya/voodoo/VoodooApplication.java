@@ -19,6 +19,7 @@ package com.earaya.voodoo;
 
 import com.earaya.voodoo.components.Component;
 import com.earaya.voodoo.config.HttpServerConfig;
+import com.wordnik.swagger.jaxrs.JaxrsApiReader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -31,6 +32,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 public class VoodooApplication {
 
     static {
+	JaxrsApiReader.setFormatString("");
         if (!SLF4JBridgeHandler.isInstalled()) {
             SLF4JBridgeHandler.removeHandlersForRootLogger();
             SLF4JBridgeHandler.install();
