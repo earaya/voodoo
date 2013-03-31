@@ -30,7 +30,7 @@ public class StaticComponent implements Component {
 
     @Override
     public void start(VoodooApplication application) {
-        application.handlerCollection.addHandler(getHandler());
+        application.addHandler(getHandler());
     }
 
     private ContextHandler getHandler() {

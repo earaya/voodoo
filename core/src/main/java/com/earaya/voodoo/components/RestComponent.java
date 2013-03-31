@@ -92,7 +92,7 @@ public class RestComponent implements Component {
     }
 
     public void start(VoodooApplication application) {
-        application.handlerCollection.addHandler(getHandler());
+        application.addHandler(getHandler());
     }
 
     private ContextHandler getHandler() {

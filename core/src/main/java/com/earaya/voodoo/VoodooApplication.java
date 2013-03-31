@@ -20,6 +20,7 @@ package com.earaya.voodoo;
 import com.earaya.voodoo.components.Component;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.wordnik.swagger.jaxrs.JaxrsApiReader;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -32,7 +33,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 public class VoodooApplication {
 
     static {
-	JaxrsApiReader.setFormatString("");
+        JaxrsApiReader.setFormatString("");
         if (!SLF4JBridgeHandler.isInstalled()) {
             SLF4JBridgeHandler.removeHandlersForRootLogger();
             SLF4JBridgeHandler.install();
@@ -43,9 +44,7 @@ public class VoodooApplication {
     private final Server server;
     private final HttpServerConfig httpServerConfig;
     private final Component[] components;
-
-    // TODO: hide this and provide addHanlder method.
-    public final ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+    private final ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 
     public VoodooApplication(HttpServerConfig httpServerConfig, Component... components) {
         this.httpServerConfig = httpServerConfig;
@@ -55,6 +54,10 @@ public class VoodooApplication {
         server.addConnector(getConnector());
 
         server.setHandler(handlerCollection);
+    }
+
+    public void addHandler(Handler hanlder) {
+        handlerCollection.addHandler(hanlder);
     }
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
