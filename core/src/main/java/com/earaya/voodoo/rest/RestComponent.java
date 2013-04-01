@@ -15,13 +15,12 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.components;
+package com.earaya.voodoo.rest;
 
 import com.earaya.voodoo.Component;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
-import com.earaya.voodoo.resources.VoodooApiListing;
 import com.google.common.base.Strings;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

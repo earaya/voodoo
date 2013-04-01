@@ -1,4 +1,4 @@
-package com.earaya.voodoo.components;
+package com.earaya.voodoo.rest;
 
 import com.earaya.voodoo.exceptions.InvalidEntityException;
 import com.earaya.voodoo.validation.Validated;

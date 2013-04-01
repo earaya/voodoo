@@ -1,4 +1,4 @@
-package com.earaya.voodoo.modules;
+package com.earaya.voodoo.rest;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;

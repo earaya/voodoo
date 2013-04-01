@@ -1,4 +1,4 @@
-package com.earaya.voodoo.resources;
+package com.earaya.voodoo.rest;
 
 @javax.ws.rs.Path("/docs")
 @com.wordnik.swagger.annotations.Api("/docs")

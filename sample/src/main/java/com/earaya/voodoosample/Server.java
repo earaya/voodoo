@@ -2,9 +2,9 @@ package com.earaya.voodoosample;
 
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.auth.basic.BasicAuthProvider;
-import com.earaya.voodoo.components.ApiDocUIComponent;
-import com.earaya.voodoo.components.RestComponent;
-import com.earaya.voodoo.components.StaticComponent;
+import com.earaya.voodoo.assets.ApiDocUIComponent;
+import com.earaya.voodoo.rest.RestComponent;
+import com.earaya.voodoo.assets.StaticComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
 
 public class Server {

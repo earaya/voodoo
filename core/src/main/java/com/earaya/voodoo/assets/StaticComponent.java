@@ -1,4 +1,4 @@
-package com.earaya.voodoo.components;
+package com.earaya.voodoo.assets;
 
 import com.earaya.voodoo.Component;
 import com.earaya.voodoo.VoodooApplication;
@@ -8,15 +8,24 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.servlets.gzip.GzipHandler;
 
-public class ApiDocUIComponent implements Component {
-
+public class StaticComponent implements Component {
+    private final String filePath;
     private String rootPath = "/";
-    private String webDir = "swagger-ui";
+    int cacheAge = 30 * 24 * 60 * 60; // One month in seconds.
 
-    public ApiDocUIComponent root(String rootPath) {
+    public StaticComponent(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public StaticComponent root(String rootPath) {
         this.rootPath = rootPath;
+        return this;
+    }
+
+    public StaticComponent cacheAge(int cacheAge) {
+        this.cacheAge = cacheAge;
         return this;
     }
 
@@ -25,21 +34,22 @@ public class ApiDocUIComponent implements Component {
         application.addHandler(getHandler());
     }
 
-    protected ContextHandler getHandler() {
+    private ContextHandler getHandler() {
         MimeTypes mimeTypes = new MimeTypes();
         mimeTypes.addMimeMapping("woff", "font/woff");
         mimeTypes.addMimeMapping("ttf", "font/ttf");
 
         ResourceHandler resourceHandler = new ResourceHandler();
-
-        //String resourceBase = this.getClass().getClassLoader().getResource(webDir).toExternalForm();
-        //resourceHandler.setResourceBase(resourceBase);
-        resourceHandler.setBaseResource(Resource.newClassPathResource(webDir));
         resourceHandler.setMimeTypes(mimeTypes);
-        //TODO: should we set cache control?
+        resourceHandler.setCacheControl(String.format("max-age=%s,public", cacheAge));
+        resourceHandler.setResourceBase(filePath);
+
+        GzipHandler gzipHandler = new GzipHandler();
+        gzipHandler.setHandler(resourceHandler);
+        gzipHandler.setMimeTypes("text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,application/x-javascript,application/json,image/svg+xml");
 
         HandlerCollection collection = new HandlerCollection();
-        collection.setHandlers(new Handler[]{resourceHandler});
+        collection.setHandlers(new Handler[]{gzipHandler, resourceHandler});
 
         ServletContextHandler contextHandler = new ServletContextHandler();
         contextHandler.setContextPath(rootPath);
