@@ -1,7 +1,7 @@
 package com.earaya.voodoosample;
 
 import com.earaya.voodoo.VoodooApplication;
-import com.earaya.voodoo.auth.basic.BasicAuthProvider;
+import com.earaya.voodoo.auth.rest.basic.BasicAuthProvider;
 import com.earaya.voodoo.assets.ApiDocUIComponent;
 import com.earaya.voodoo.rest.RestComponent;
 import com.earaya.voodoo.assets.StaticComponent;

@@ -1,4 +1,4 @@
-package com.earaya.voodoo.auth;
+package com.earaya.voodoo.auth.rest;
 
 /**
  * An exception thrown to indicate that an {@link Authenticator} is <b>unable</b> to check the

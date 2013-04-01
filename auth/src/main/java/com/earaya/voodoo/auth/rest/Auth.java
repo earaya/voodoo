@@ -1,4 +1,4 @@
-package com.earaya.voodoo.auth;
+package com.earaya.voodoo.auth.rest;
 
 import java.lang.annotation.*;
 

@@ -1,6 +1,6 @@
 /* Copied from DropWizard. */
 
-package com.earaya.voodoo.auth;
+package com.earaya.voodoo.auth.rest;
 
 import com.google.common.base.Optional;
 

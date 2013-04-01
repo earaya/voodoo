@@ -1,4 +1,4 @@
-package com.earaya.voodoo.auth.basic;
+package com.earaya.voodoo.auth.rest.basic;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
