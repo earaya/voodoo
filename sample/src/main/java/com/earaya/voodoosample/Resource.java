@@ -1,6 +1,6 @@
 package com.earaya.voodoosample;
 
-import com.earaya.voodoo.auth.rest.Auth;
+import com.earaya.voodoo.rest.auth.Auth;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yammer.metrics.annotation.Timed;
