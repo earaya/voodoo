@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
  * An {@link Authenticator} decorator which uses a Guava cache to temporarily cache credentials and
  * their corresponding principals.
  *
- * @param <C>    the type of credentials the authenticator can authenticate
- * @param <P>    the type of principals the authenticator returns
+ * @param <C> the type of credentials the authenticator can authenticate
+ * @param <P> the type of principals the authenticator returns
  */
 public class CachingAuthenticator<C, P> implements Authenticator<C, P> {
 
@@ -49,7 +49,7 @@ public class CachingAuthenticator<C, P> implements Authenticator<C, P> {
                 "gets",
                 TimeUnit.MILLISECONDS,
                 TimeUnit.SECONDS);
-        this.cache = builder.recordStats().build(new CacheLoader<C, Optional<P>> () {
+        this.cache = builder.recordStats().build(new CacheLoader<C, Optional<P>>() {
             @Override
             public Optional<P> load(C key) throws Exception {
                 cacheMisses.mark();
@@ -73,7 +73,7 @@ public class CachingAuthenticator<C, P> implements Authenticator<C, P> {
     /**
      * Discards any cached principal for the given credentials.
      *
-     * @param credentials    a set of credentials
+     * @param credentials a set of credentials
      */
     public void invalidate(C credentials) {
         cache.invalidate(credentials);
@@ -82,7 +82,7 @@ public class CachingAuthenticator<C, P> implements Authenticator<C, P> {
     /**
      * Discards any cached principal for the given collection of credentials.
      *
-     * @param credentials    a collection of credentials
+     * @param credentials a collection of credentials
      */
     public void invalidateAll(Iterable<C> credentials) {
         cache.invalidateAll(credentials);

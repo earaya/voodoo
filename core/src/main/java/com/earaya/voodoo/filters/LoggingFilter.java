@@ -41,8 +41,7 @@ public class LoggingFilter implements Filter {
         // Not entirely sure when this will ever be false, but test for it anyway
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
-        }
-        else {
+        } else {
             chain.doFilter(request, response);
         }
     }
@@ -61,8 +60,7 @@ public class LoggingFilter implements Filter {
         }
         try {
             chain.doFilter(request, response);
-        }
-        finally {
+        } finally {
             timer.stop();
             if (LOG.isInfoEnabled()) {
                 LOG.info("Finished request in {}.", timer.toString());

@@ -16,6 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Validated {
     /**
      * Specify one or more validation groups to apply to the validation.
+     *
      * @return Validation groups
      */
     Class<?>[] value() default {Default.class};

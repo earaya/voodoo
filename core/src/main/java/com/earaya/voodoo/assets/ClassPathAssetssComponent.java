@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class ClassPathAssetssComponent extends AssetsComponent {
 
-    public ClassPathAssetssComponent (String assetsPath) {
+    public ClassPathAssetssComponent(String assetsPath) {
         super(assetsPath);
     }
 

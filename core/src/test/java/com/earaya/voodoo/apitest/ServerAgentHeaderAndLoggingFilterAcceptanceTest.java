@@ -17,9 +17,9 @@ package com.earaya.voodoo.apitest;
 
 
 import com.earaya.voodoo.VoodooApplication;
-import com.earaya.voodoo.rest.RestComponent;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.filters.LoggingFilter;
+import com.earaya.voodoo.rest.RestComponent;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

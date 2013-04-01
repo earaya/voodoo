@@ -34,7 +34,7 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     /**
      * The default group array used in case any of the validate methods is called without a group.
      */
-    private static final Class<?>[] DEFAULT_GROUP_ARRAY = new Class<?>[]{ Default.class };
+    private static final Class<?>[] DEFAULT_GROUP_ARRAY = new Class<?>[]{Default.class};
     private static final com.fasterxml.jackson.databind.ObjectMapper JSON_MAPPER;
     private final ValidatorFacade validatorFacade = new ValidatorFacade();
 
@@ -85,7 +85,7 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
             if (annotation.annotationType() == Valid.class) {
                 return DEFAULT_GROUP_ARRAY;
             } else if (annotation.annotationType() == Validated.class) {
-                return  ((Validated) annotation).value();
+                return ((Validated) annotation).value();
             }
         }
         return null;
