@@ -1,8 +1,8 @@
-package com.earaya.voodoo.auth.rest.basic;
+package com.earaya.voodoo.rest.auth.basic;
 
-import com.earaya.voodoo.auth.rest.Auth;
-import com.earaya.voodoo.auth.rest.AuthenticationException;
-import com.earaya.voodoo.auth.rest.Authenticator;
+import com.earaya.voodoo.rest.auth.Auth;
+import com.earaya.voodoo.rest.auth.AuthenticationException;
+import com.earaya.voodoo.rest.auth.Authenticator;
 import com.google.common.base.Optional;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.model.Parameter;
