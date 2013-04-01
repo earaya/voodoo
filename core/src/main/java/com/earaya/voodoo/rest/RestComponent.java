@@ -50,8 +50,8 @@ public class RestComponent implements Component {
     private final PackagesResourceConfig resourceConfig;
     private final Injector injector;
     private String rootPath = "/";
-    private String version = "";
-    private Class<?> apiDocClass = VoodooApiListing.class;
+    private String version = "1";
+    private Class documentationListing = DocumentationListing.class;
 
     public RestComponent(String packageName, Module... modules) {
         resourceConfig = new PackagesResourceConfig(packageName);
@@ -63,7 +63,8 @@ public class RestComponent implements Component {
         this(pkg.getName(), modules);
     }
 
-    public RestComponent provider(Class<?> provider) {
+    // TODO: all these methods that set properties should be more defensive and check the params passed in.
+    public RestComponent provider(Class provider) {
         return provider(injector.getInstance(provider));
     }
 
@@ -82,8 +83,8 @@ public class RestComponent implements Component {
         return this;
     }
 
-    public RestComponent apiDocClass(Class<?> apiDocClass) {
-        this.apiDocClass = apiDocClass;
+    public RestComponent documentation(Class documentationListing) {
+        this.documentationListing = documentationListing;
         return this;
     }
 
@@ -95,18 +96,14 @@ public class RestComponent implements Component {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath(rootPath);
 
-        ServletHolder h = new ServletHolder(new VoodooServletContainer(resourceConfig, injector));
+        resourceConfig.getClasses().add(documentationListing);
 
-        if (null != apiDocClass) {
-            resourceConfig.getClasses().add(apiDocClass);
-            h.setInitParameter("swagger.api.basepath", rootPath);
-            if (!Strings.isNullOrEmpty(version)) {
-                h.setInitParameter("api.version", version);
-            }
-        }
+        ServletHolder voodooServletHolder = new ServletHolder(new VoodooServletContainer(resourceConfig, injector));
+        voodooServletHolder.setInitParameter("swagger.api.basepath", rootPath);
+        voodooServletHolder.setInitParameter("api.version", version);
 
         final EnumSet<DispatcherType> dispatcherTypes = EnumSet.allOf(DispatcherType.class);
-        context.addServlet(h, "/*");
+        context.addServlet(voodooServletHolder, "/*");
         context.addFilter(GuiceFilter.class, "/*", dispatcherTypes);
         context.addFilter(LoggingFilter.class, "/*", dispatcherTypes);
         context.addFilter(GzipFilter.class, "/*", dispatcherTypes);
