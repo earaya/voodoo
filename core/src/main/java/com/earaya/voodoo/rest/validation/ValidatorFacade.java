@@ -1,4 +1,4 @@
-package com.earaya.voodoo.validation;
+package com.earaya.voodoo.rest.validation;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;

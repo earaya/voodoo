@@ -1,4 +1,4 @@
-package com.earaya.voodoo.validation;
+package com.earaya.voodoo.rest.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

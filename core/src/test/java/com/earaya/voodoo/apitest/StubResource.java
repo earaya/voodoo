@@ -15,10 +15,10 @@
  */
 package com.earaya.voodoo.apitest;
 
-import com.earaya.voodoo.exceptions.BadRequestException;
-import com.earaya.voodoo.exceptions.NotFoundException;
-import com.earaya.voodoo.exceptions.ServerErrorException;
-import com.earaya.voodoo.exceptions.ServiceUnavailableException;
+import com.earaya.voodoo.rest.exceptions.BadRequestException;
+import com.earaya.voodoo.rest.exceptions.NotFoundException;
+import com.earaya.voodoo.rest.exceptions.ServerErrorException;
+import com.earaya.voodoo.rest.exceptions.ServiceUnavailableException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

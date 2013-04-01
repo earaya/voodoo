@@ -19,7 +19,7 @@ package com.earaya.voodoo.rest;
 
 import com.earaya.voodoo.Component;
 import com.earaya.voodoo.VoodooApplication;
-import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
+import com.earaya.voodoo.rest.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.google.common.base.Strings;
 import com.google.inject.Guice;

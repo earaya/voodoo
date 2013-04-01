@@ -14,23 +14,36 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.exceptions;
+package com.earaya.voodoo.rest.exceptions;
 
 import javax.ws.rs.core.Response.Status;
 
-public class ServiceUnavailableException extends HttpException {
+public class HttpException extends RuntimeException {
 
-    public static int DEFAULT_RETRY = 300; // 5 min
+    private final Status status;
+    private final String message;
+    private final int retryAfter;
 
-    public ServiceUnavailableException(String msg) {
-        this(msg, DEFAULT_RETRY);
+    public HttpException(Status status, String message, int retryAfter) {
+        this.status = status;
+        this.message = message;
+        this.retryAfter = retryAfter;
     }
 
-    public ServiceUnavailableException(String msg, int retryAfter) {
-        super(Status.SERVICE_UNAVAILABLE, flattenMessage(msg), retryAfter);
+    public HttpException(Status status, String message) {
+        this(status, message, -1);
     }
 
-    private static String flattenMessage(String msg) {
-        return msg.replaceAll("\n", " ");
+    public Status getStatus() {
+        return status;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public int getRetryAfter() {
+        return retryAfter;
+    }
+
 }

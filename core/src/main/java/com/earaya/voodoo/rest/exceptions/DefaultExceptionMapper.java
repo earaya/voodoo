@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.exceptions;
+package com.earaya.voodoo.rest.exceptions;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;

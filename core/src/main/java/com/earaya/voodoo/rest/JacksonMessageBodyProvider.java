@@ -1,8 +1,8 @@
 package com.earaya.voodoo.rest;
 
-import com.earaya.voodoo.exceptions.InvalidEntityException;
-import com.earaya.voodoo.validation.Validated;
-import com.earaya.voodoo.validation.ValidatorFacade;
+import com.earaya.voodoo.rest.exceptions.InvalidEntityException;
+import com.earaya.voodoo.rest.validation.Validated;
+import com.earaya.voodoo.rest.validation.ValidatorFacade;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

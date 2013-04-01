@@ -14,14 +14,20 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.exceptions;
+package com.earaya.voodoo.rest.exceptions;
 
 import javax.ws.rs.core.Response.Status;
 
-public class BadRequestException extends HttpException {
+public class ServiceUnavailableException extends HttpException {
 
-    public BadRequestException(String msg) {
-        super(Status.BAD_REQUEST, flattenMessage(msg));
+    public static int DEFAULT_RETRY = 300; // 5 min
+
+    public ServiceUnavailableException(String msg) {
+        this(msg, DEFAULT_RETRY);
+    }
+
+    public ServiceUnavailableException(String msg, int retryAfter) {
+        super(Status.SERVICE_UNAVAILABLE, flattenMessage(msg), retryAfter);
     }
 
     private static String flattenMessage(String msg) {

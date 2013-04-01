@@ -14,36 +14,17 @@
  *    limitations under the License.
  */
 
-package com.earaya.voodoo.exceptions;
+package com.earaya.voodoo.rest.exceptions;
 
 import javax.ws.rs.core.Response.Status;
 
-public class HttpException extends RuntimeException {
+public class ServerErrorException extends HttpException {
 
-    private final Status status;
-    private final String message;
-    private final int retryAfter;
-
-    public HttpException(Status status, String message, int retryAfter) {
-        this.status = status;
-        this.message = message;
-        this.retryAfter = retryAfter;
+    public ServerErrorException(String msg) {
+        super(Status.INTERNAL_SERVER_ERROR, flattenMessage(msg));
     }
 
-    public HttpException(Status status, String message) {
-        this(status, message, -1);
+    private static String flattenMessage(String msg) {
+        return msg.replaceAll("\n", " ");
     }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public int getRetryAfter() {
-        return retryAfter;
-    }
-
 }

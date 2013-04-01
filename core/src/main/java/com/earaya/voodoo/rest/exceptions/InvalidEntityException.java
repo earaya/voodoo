@@ -1,4 +1,4 @@
-package com.earaya.voodoo.exceptions;
+package com.earaya.voodoo.rest.exceptions;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
