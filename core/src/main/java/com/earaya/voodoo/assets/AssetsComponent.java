@@ -9,32 +9,43 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlets.gzip.GzipHandler;
+import org.eclipse.jetty.util.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class StaticComponent implements Component {
-    private final String filePath;
-    private String rootPath = "/";
-    int cacheAge = 30 * 24 * 60 * 60; // One month in seconds.
+import java.io.IOException;
 
-    public StaticComponent(String filePath) {
-        this.filePath = filePath;
+public abstract class AssetsComponent implements Component {
+
+    protected String rootPath;
+    protected final String assetsPath;
+    private int cacheAge = 30 * 24 * 60 * 60; // One month in seconds.
+    private Logger logger = LoggerFactory.getLogger(AssetsComponent.class);
+
+    protected AssetsComponent(String assetsPath) {
+        this.assetsPath = assetsPath;
     }
 
-    public StaticComponent root(String rootPath) {
+    public AssetsComponent root(String rootPath) {
         this.rootPath = rootPath;
         return this;
     }
 
-    public StaticComponent cacheAge(int cacheAge) {
+    public AssetsComponent cacheAge(int cacheAge) {
         this.cacheAge = cacheAge;
         return this;
     }
 
     @Override
     public void start(VoodooApplication application) {
-        application.addHandler(getHandler());
+        try {
+            application.addHandler(getHandler(getBaseResource()));
+        } catch (IOException e) {
+            logger.warn("Unable to load base resource: " + assetsPath);
+        }
     }
 
-    private ContextHandler getHandler() {
+    private ContextHandler getHandler(Resource base) {
         MimeTypes mimeTypes = new MimeTypes();
         mimeTypes.addMimeMapping("woff", "font/woff");
         mimeTypes.addMimeMapping("ttf", "font/ttf");
@@ -42,7 +53,7 @@ public class StaticComponent implements Component {
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setCacheControl(String.format("max-age=%s,public", cacheAge));
-        resourceHandler.setResourceBase(filePath);
+        resourceHandler.setBaseResource(base);
 
         GzipHandler gzipHandler = new GzipHandler();
         gzipHandler.setHandler(resourceHandler);
@@ -57,4 +68,6 @@ public class StaticComponent implements Component {
         contextHandler.setHandler(collection);
         return contextHandler;
     }
+
+    protected abstract Resource getBaseResource() throws IOException;
 }
