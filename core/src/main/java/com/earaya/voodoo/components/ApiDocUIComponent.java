@@ -1,5 +1,6 @@
 package com.earaya.voodoo.components;
 
+import com.earaya.voodoo.Component;
 import com.earaya.voodoo.VoodooApplication;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Handler;

@@ -17,6 +17,7 @@
 
 package com.earaya.voodoo.components;
 
+import com.earaya.voodoo.Component;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.exceptions.DefaultExceptionMapper;
 import com.earaya.voodoo.filters.LoggingFilter;
@@ -33,21 +34,17 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.WebApplication;
 import com.sun.jersey.spi.container.servlet.WebConfig;
-import com.wordnik.swagger.jaxrs.JaxrsApiReader;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.GzipFilter;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
 
 public class RestComponent implements Component {
 

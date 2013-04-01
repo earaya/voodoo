@@ -1,4 +1,4 @@
-package com.earaya.voodoo.components;
+package com.earaya.voodoo;
 
 import com.earaya.voodoo.VoodooApplication;
 

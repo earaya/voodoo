@@ -17,7 +17,6 @@
 
 package com.earaya.voodoo;
 
-import com.earaya.voodoo.components.Component;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.wordnik.swagger.jaxrs.JaxrsApiReader;
 import org.eclipse.jetty.server.Handler;
