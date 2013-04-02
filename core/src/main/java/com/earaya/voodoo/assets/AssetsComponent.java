@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public abstract class AssetsComponent implements Component {
+abstract class AssetsComponent implements Component {
 
     protected String rootPath;
     protected final String assetsPath;
