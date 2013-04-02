@@ -29,6 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+
+/**
+ * Sets up and starts a HTTP server that surfaces the functionality of the @see Component contained here.
+ */
 public class VoodooApplication {
 
     static {
@@ -55,6 +59,12 @@ public class VoodooApplication {
         server.setHandler(handlerCollection);
     }
 
+
+    /**
+     * Adds a handler to the application's @see HandlerCollection.
+     *
+     * @param hanlder the hanlder
+     */
     public void addHandler(Handler hanlder) {
         handlerCollection.addHandler(hanlder);
     }

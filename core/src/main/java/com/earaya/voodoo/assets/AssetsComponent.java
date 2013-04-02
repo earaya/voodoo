@@ -41,7 +41,7 @@ public abstract class AssetsComponent implements Component {
         try {
             application.addHandler(getHandler(getBaseResource()));
         } catch (IOException e) {
-            logger.warn("Unable to load base resource: " + assetsPath);
+            logger.warn("Unable to load base resource: " + assetsPath, e);
         }
     }
 
