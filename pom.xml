@@ -76,16 +76,6 @@
                 <artifactId>jetty-servlets</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty.spdy</groupId>
-                <artifactId>spdy-http-server</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mortbay.jetty.npn</groupId>
-                <artifactId>npn-boot</artifactId>
-                <version>8.1.2.v20120308</version>
-            </dependency>
 
             <!-- Jersey Modules -->
             <dependency>

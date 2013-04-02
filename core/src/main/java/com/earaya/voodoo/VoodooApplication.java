@@ -23,8 +23,6 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnector;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -98,16 +96,7 @@ public class VoodooApplication {
     }
 
     private ServerConnector getConnector() {
-        ServerConnector connector;
-
-        if (null == httpServerConfig.getSslConfig()) {
-            connector = new HTTPSPDYServerConnector(this.server);
-        } else {
-            SslContextFactory sslContextFactory = new SslContextFactory(httpServerConfig.getSslConfig().getKeyStorePath());
-            sslContextFactory.setKeyStorePassword(httpServerConfig.getSslConfig().getKeyStorePassword());
-            sslContextFactory.setProtocol("TLSv1.2");
-            connector = new HTTPSPDYServerConnector(this.server, sslContextFactory);
-        }
+        ServerConnector connector = new ServerConnector(server);
         connector.setPort(httpServerConfig.getPort());
         return connector;
     }
