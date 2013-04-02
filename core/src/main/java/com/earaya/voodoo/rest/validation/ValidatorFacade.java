@@ -12,7 +12,7 @@ import java.util.Set;
 import static java.lang.String.format;
 
 /**
- * A simple façade for Hibernate Validator.
+ * A simple facade for Hibernate Validator.
  */
 public class ValidatorFacade {
     private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();

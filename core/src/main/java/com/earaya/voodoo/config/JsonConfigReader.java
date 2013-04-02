@@ -47,7 +47,7 @@ public class JsonConfigReader {
      * Deserializes the given {@link JsonNode} as an instance of the given type.
      *
      * @param root         a {@link JsonNode}
-     * @param valueTypeRef a {@link TypeReference} of the type to deserialize {@code src} as
+     * @param klass        a {@link TypeReference} of the type to deserialize {@code src} as
      * @param <T>          the type of {@code valueTypeRef}
      * @return the contents of {@code src} as an instance of {@code T}
      * @throws IOException if there is an error mapping {@code src} to {@code T}

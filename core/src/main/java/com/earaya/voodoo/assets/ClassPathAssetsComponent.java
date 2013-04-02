@@ -4,9 +4,9 @@ import org.eclipse.jetty.util.resource.Resource;
 
 import java.io.IOException;
 
-public class ClassPathAssetssComponent extends AssetsComponent {
+public class ClassPathAssetsComponent extends AssetsComponent {
 
-    public ClassPathAssetssComponent(String assetsPath) {
+    public ClassPathAssetsComponent(String assetsPath) {
         super(assetsPath);
     }
 

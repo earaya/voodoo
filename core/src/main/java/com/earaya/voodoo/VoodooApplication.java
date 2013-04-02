@@ -29,7 +29,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 
 /**
- * Sets up and starts a HTTP server that surfaces the functionality of the @see Component contained here.
+ * Sets up and starts a HTTP server that surfaces the functionality of the {@link Component} contained here.
  */
 public class VoodooApplication {
 
@@ -59,7 +59,7 @@ public class VoodooApplication {
 
 
     /**
-     * Adds a handler to the application's @see HandlerCollection.
+     * Adds a handler to the application's {@link org.eclipse.jetty.server.handler.HandlerCollection}.
      *
      * @param hanlder the hanlder
      */
