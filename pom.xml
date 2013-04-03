@@ -41,6 +41,15 @@
         <module>auth</module>
     </modules>
 
+
+        <repositories>
+            <repository>
+                <id>earaya-mvn-repo</id>
+                <url>https://raw.github.com/earaya/mvn-repo/master/snapshots/</url>
+            </repository>
+        </repositories>
+
+
     <dependencyManagement>
         <dependencies>
             <!-- Dependency Injection -->
