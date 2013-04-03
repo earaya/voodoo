@@ -15,6 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * A {@link Component} that serves static assets. There are two flavors of this class: {@link FilePathAssetsComponent}
+ * and {@link ClassPathAssetsComponent}.
+ */
 abstract class AssetsComponent implements Component {
 
     protected String rootPath;
@@ -22,15 +26,31 @@ abstract class AssetsComponent implements Component {
     private int cacheAge = 30 * 24 * 60 * 60; // One month in seconds.
     private Logger logger = LoggerFactory.getLogger(AssetsComponent.class);
 
+    /**
+     * The file path at which the static assets are found.
+     * @param assetsPath
+     */
     protected AssetsComponent(String assetsPath) {
         this.assetsPath = assetsPath;
     }
 
+    /**
+     * Sets the URL root path at which to serve the static assets.
+     *
+     * @param rootPath
+     * @return
+     */
     public AssetsComponent root(String rootPath) {
         this.rootPath = rootPath;
         return this;
     }
 
+    /**
+     * Sets the max max-age directive.
+     *
+     * @param cacheAge (in seconds)
+     * @return
+     */
     public AssetsComponent cacheAge(int cacheAge) {
         this.cacheAge = cacheAge;
         return this;
