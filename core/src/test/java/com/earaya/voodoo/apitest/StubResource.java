@@ -16,9 +16,9 @@
 package com.earaya.voodoo.apitest;
 
 import com.earaya.voodoo.rest.exceptions.BadRequestException;
-import com.earaya.voodoo.rest.exceptions.NotFoundException;
 import com.earaya.voodoo.rest.exceptions.ServerErrorException;
 import com.earaya.voodoo.rest.exceptions.ServiceUnavailableException;
+import com.sun.jersey.api.NotFoundException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
