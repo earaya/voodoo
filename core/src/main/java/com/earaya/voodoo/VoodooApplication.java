@@ -28,7 +28,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 
 /**
- * Sets up and starts a HTTP server that surfaces the functionality of the {@link Component} contained here.
+ * Sets up and starts a HTTP server that surfaces the functionality of the {@link Component}s contained here.
  */
 public class VoodooApplication {
 

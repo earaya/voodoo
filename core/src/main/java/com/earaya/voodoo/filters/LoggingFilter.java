@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * A {@link Filter} that logs a unique ID on every request, and times every request.
+ */
 public class LoggingFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingFilter.class);
