@@ -22,16 +22,16 @@ import java.io.IOException;
 abstract class AssetsComponent implements Component {
 
     protected String rootPath;
-    protected final String assetsPath;
+    protected final Resource resourceBase;
     private int cacheAge = 30 * 24 * 60 * 60; // One month in seconds.
     private Logger logger = LoggerFactory.getLogger(AssetsComponent.class);
 
     /**
-     * The file path at which the static assets are found.
-     * @param assetsPath
+     * The Resource at which the static assets are found.
+     * @param resourceBase
      */
-    protected AssetsComponent(String assetsPath) {
-        this.assetsPath = assetsPath;
+    protected AssetsComponent(Resource resourceBase) {
+        this.resourceBase = resourceBase;
     }
 
     /**
@@ -57,15 +57,7 @@ abstract class AssetsComponent implements Component {
     }
 
     @Override
-    public void start(VoodooApplication application) {
-        try {
-            application.addHandler(getHandler(getBaseResource()));
-        } catch (IOException e) {
-            logger.warn("Unable to load base resource: " + assetsPath, e);
-        }
-    }
-
-    private ContextHandler getHandler(Resource base) {
+    public ContextHandler getHandler() {
         MimeTypes mimeTypes = new MimeTypes();
         mimeTypes.addMimeMapping("woff", "font/woff");
         mimeTypes.addMimeMapping("ttf", "font/ttf");
@@ -73,7 +65,7 @@ abstract class AssetsComponent implements Component {
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setCacheControl(String.format("max-age=%s,public", cacheAge));
-        resourceHandler.setBaseResource(base);
+        resourceHandler.setBaseResource(resourceBase);
 
         GzipHandler gzipHandler = new GzipHandler();
         gzipHandler.setHandler(resourceHandler);
@@ -88,6 +80,4 @@ abstract class AssetsComponent implements Component {
         contextHandler.setHandler(collection);
         return contextHandler;
     }
-
-    protected abstract Resource getBaseResource() throws IOException;
 }

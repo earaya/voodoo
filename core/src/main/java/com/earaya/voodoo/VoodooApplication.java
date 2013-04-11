@@ -19,7 +19,6 @@ package com.earaya.voodoo;
 
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.wordnik.swagger.jaxrs.JaxrsApiReader;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -57,24 +56,12 @@ public class VoodooApplication {
         server.setHandler(handlerCollection);
     }
 
-
-    /**
-     * Adds a handler to the application's {@link org.eclipse.jetty.server.handler.HandlerCollection}.
-     *
-     * @param hanlder the hanlder
-     */
-    public void addHandler(Handler hanlder) {
-        handlerCollection.addHandler(hanlder);
-    }
-
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public void start() throws Exception {
         LOG.info("Starting http server on port {}", httpServerConfig.getPort());
+        initComponents();
 
         try {
-            for (Component component : components) {
-                component.start(this);
-            }
             server.start();
         } catch (Exception e) {
             LOG.error("Error starting HTTP Server", e);
@@ -99,5 +86,11 @@ public class VoodooApplication {
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(httpServerConfig.getPort());
         return connector;
+    }
+
+    private void initComponents() {
+        for(Component component : components) {
+            handlerCollection.addHandler(component.getHandler());
+        }
     }
 }

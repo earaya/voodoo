@@ -87,11 +87,8 @@ public class RestComponent implements Component {
         return this;
     }
 
-    public void start(VoodooApplication application) {
-        application.addHandler(getHandler());
-    }
-
-    private ContextHandler getHandler() {
+    @Override
+    public ContextHandler getHandler() {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath(rootPath);
 
