@@ -7,7 +7,7 @@ import com.earaya.voodoo.rest.auth.basic.BasicAuthProvider;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.rest.RestComponent;
 
-public class Server {
+public class AppMain {
     public static void main(String[] args) throws Exception {
         VoodooApplication app = new VoodooApplication(
                 new HttpServerConfig(8080),
