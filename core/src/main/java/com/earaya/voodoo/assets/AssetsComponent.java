@@ -1,7 +1,6 @@
 package com.earaya.voodoo.assets;
 
 import com.earaya.voodoo.Component;
-import com.earaya.voodoo.VoodooApplication;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -12,8 +11,6 @@ import org.eclipse.jetty.servlets.gzip.GzipHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * A {@link Component} that serves static assets. There are two flavors of this class: {@link FilePathAssetsComponent}
@@ -28,6 +25,7 @@ abstract class AssetsComponent implements Component {
 
     /**
      * The Resource at which the static assets are found.
+     *
      * @param resourceBase
      */
     protected AssetsComponent(Resource resourceBase) {

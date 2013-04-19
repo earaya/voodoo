@@ -7,8 +7,8 @@ import com.yammer.metrics.annotation.Timed;
 
 import javax.ws.rs.*;
 
-@Path("/user")
-@Api(value = "/user", description = "User operations")
+@Path("/users")
+@Api(value = "/users", description = "User operations")
 @Consumes("application/json")
 @Produces("application/json")
 public class UserResource {
@@ -18,7 +18,7 @@ public class UserResource {
     @Path("/{name}")
     @ApiOperation(value = "Get user by name", responseClass = "com.earaya.voodoosample.User")
     public User getUser(@ApiParam(value = "Name of the user to fetch") @PathParam("name")
-                            String name) {
+                        String name) {
         User u = new User();
         u.name = name;
         return u;

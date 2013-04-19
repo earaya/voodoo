@@ -18,7 +18,6 @@
 package com.earaya.voodoo.rest;
 
 import com.earaya.voodoo.Component;
-import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.rest.exceptions.DefaultExceptionMapper;
 import com.google.inject.Guice;

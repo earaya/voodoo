@@ -42,12 +42,12 @@
     </modules>
 
 
-        <repositories>
-            <repository>
-                <id>earaya-mvn-repo</id>
-                <url>https://raw.github.com/earaya/mvn-repo/master/snapshots/</url>
-            </repository>
-        </repositories>
+    <repositories>
+        <repository>
+            <id>earaya-mvn-repo</id>
+            <url>https://raw.github.com/earaya/mvn-repo/master/snapshots/</url>
+        </repository>
+    </repositories>
 
 
     <dependencyManagement>

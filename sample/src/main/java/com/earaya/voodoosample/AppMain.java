@@ -3,9 +3,9 @@ package com.earaya.voodoosample;
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.assets.ClassPathAssetsComponent;
 import com.earaya.voodoo.assets.FilePathAssetsComponent;
-import com.earaya.voodoo.rest.auth.basic.BasicAuthProvider;
 import com.earaya.voodoo.config.HttpServerConfig;
 import com.earaya.voodoo.rest.RestComponent;
+import com.earaya.voodoo.rest.auth.basic.BasicAuthProvider;
 
 public class AppMain {
     public static void main(String[] args) throws Exception {

@@ -89,7 +89,7 @@ public class VoodooApplication {
     }
 
     private void initComponents() {
-        for(Component component : components) {
+        for (Component component : components) {
             handlerCollection.addHandler(component.getHandler());
         }
     }
