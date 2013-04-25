@@ -4,6 +4,7 @@ import com.earaya.voodoo.Component;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -70,7 +71,7 @@ abstract class AssetsComponent implements Component {
         gzipHandler.setMimeTypes("text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,application/x-javascript,application/json,image/svg+xml");
 
         HandlerCollection collection = new HandlerCollection();
-        collection.setHandlers(new Handler[]{gzipHandler, resourceHandler});
+        collection.setHandlers(new Handler[]{gzipHandler, resourceHandler, new DefaultHandler()});
 
         ServletContextHandler contextHandler = new ServletContextHandler();
         contextHandler.setContextPath(rootPath);
