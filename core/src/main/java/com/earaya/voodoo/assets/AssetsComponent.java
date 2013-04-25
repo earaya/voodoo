@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * A {@link Component} that serves static assets. There are two flavors of this class: {@link FilePathAssetsComponent}
  * and {@link ClassPathAssetsComponent}.
  */
-abstract class AssetsComponent implements Component {
+public abstract class AssetsComponent implements Component {
 
     protected String rootPath;
     protected final Resource resourceBase;
