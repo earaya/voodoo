@@ -20,6 +20,7 @@ package com.earaya.voodoo.rest;
 import com.earaya.voodoo.Component;
 import com.earaya.voodoo.filters.LoggingFilter;
 import com.earaya.voodoo.rest.exceptions.DefaultExceptionMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -46,6 +47,8 @@ import java.util.Map;
 public class RestComponent implements Component {
 
     private final PackagesResourceConfig resourceConfig;
+    private final JacksonMessageBodyProvider jacksonProvider;
+    private ObjectMapper jacksonMapper = new ObjectMapper();
     private final Injector injector;
     private String rootPath = "/";
     private String version = "1";
@@ -53,6 +56,7 @@ public class RestComponent implements Component {
 
     public RestComponent(String packageName, Module... modules) {
         resourceConfig = new PackagesResourceConfig(packageName);
+        jacksonProvider = new JacksonMessageBodyProvider(jacksonMapper);
         injector = Guice.createInjector(modules);
         setupResourceConfig();
     }
@@ -61,7 +65,6 @@ public class RestComponent implements Component {
         this(pkg.getName(), modules);
     }
 
-    // TODO: all these methods that set properties should be more defensive and check the params passed in.
     public RestComponent provider(Class provider) {
         return provider(injector.getInstance(provider));
     }
@@ -83,6 +86,11 @@ public class RestComponent implements Component {
 
     public RestComponent documentation(Class documentationListing) {
         this.documentationListing = documentationListing;
+        return this;
+    }
+
+    public RestComponent mapper(ObjectMapper jacksonMapper) {
+        this.jacksonMapper = jacksonMapper;
         return this;
     }
 
@@ -112,7 +120,7 @@ public class RestComponent implements Component {
         resourceConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 
         // Voodoo Providers
-        resourceConfig.getSingletons().add(new JacksonMessageBodyProvider());
+        resourceConfig.getSingletons().add(jacksonProvider);
         resourceConfig.getSingletons().add(new DefaultExceptionMapper());
         resourceConfig.getClasses().add(InstrumentedResourceMethodDispatchAdapter.class);
     }

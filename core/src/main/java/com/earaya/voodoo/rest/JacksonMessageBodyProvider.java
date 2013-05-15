@@ -34,12 +34,12 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
      * The default group array used in case any of the validate methods is called without a group.
      */
     private static final Class<?>[] DEFAULT_GROUP_ARRAY = new Class<?>[]{Default.class};
-    private static final com.fasterxml.jackson.databind.ObjectMapper JSON_MAPPER;
+    private final ObjectMapper jacksonMapper;
     private final ValidatorFacade validatorFacade = new ValidatorFacade();
 
-    static {
-        JSON_MAPPER = new ObjectMapper();
-        JSON_MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    public JacksonMessageBodyProvider(com.fasterxml.jackson.databind.ObjectMapper jacksonMapper) {
+        this.jacksonMapper = jacksonMapper;
+        this.jacksonMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     @Override
@@ -101,9 +101,5 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     private boolean isProvidable(Class<?> type) {
         final JsonIgnoreType ignore = type.getAnnotation(JsonIgnoreType.class);
         return (ignore == null) || !ignore.value();
-    }
-
-    public com.fasterxml.jackson.databind.ObjectMapper getObjectMapper() {
-        return JSON_MAPPER;
     }
 }
