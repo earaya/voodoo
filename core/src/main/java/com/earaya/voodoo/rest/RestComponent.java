@@ -47,8 +47,7 @@ import java.util.Map;
 public class RestComponent implements Component {
 
     private final PackagesResourceConfig resourceConfig;
-    private final JacksonMessageBodyProvider jacksonProvider;
-    private ObjectMapper jacksonMapper = new ObjectMapper();
+    private final JacksonMessageBodyProvider jacksonProvider = new JacksonMessageBodyProvider(new ObjectMapper());
     private final Injector injector;
     private String rootPath = "/";
     private String version = "1";
@@ -56,7 +55,6 @@ public class RestComponent implements Component {
 
     public RestComponent(String packageName, Module... modules) {
         resourceConfig = new PackagesResourceConfig(packageName);
-        jacksonProvider = new JacksonMessageBodyProvider(jacksonMapper);
         injector = Guice.createInjector(modules);
         setupResourceConfig();
     }
@@ -90,7 +88,7 @@ public class RestComponent implements Component {
     }
 
     public RestComponent mapper(ObjectMapper jacksonMapper) {
-        this.jacksonMapper = jacksonMapper;
+        this.jacksonProvider.setMapper(jacksonMapper);
         return this;
     }
 

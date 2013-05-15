@@ -40,6 +40,7 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     public JacksonMessageBodyProvider(com.fasterxml.jackson.databind.ObjectMapper jacksonMapper) {
         this.jacksonMapper = jacksonMapper;
         this.jacksonMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        setMapper(jacksonMapper);
     }
 
     @Override
@@ -101,5 +102,9 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     private boolean isProvidable(Class<?> type) {
         final JsonIgnoreType ignore = type.getAnnotation(JsonIgnoreType.class);
         return (ignore == null) || !ignore.value();
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return jacksonMapper;
     }
 }
