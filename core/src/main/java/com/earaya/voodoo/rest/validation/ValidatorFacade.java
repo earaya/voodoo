@@ -15,11 +15,11 @@ import static java.lang.String.format;
  * A simple facade for Hibernate Validator.
  */
 public class ValidatorFacade {
-    private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
-    private static final Validator VALIDATOR;
+    private static final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    private static final Validator validator;
 
     static {
-        VALIDATOR = VALIDATOR_FACTORY.getValidator();
+        validator = validatorFactory.getValidator();
     }
 
     /**
@@ -49,7 +49,7 @@ public class ValidatorFacade {
         if (o == null) {
             errors.add("request entity required");
         } else {
-            final Set<ConstraintViolation<T>> violations = VALIDATOR.validate(o, groups);
+            final Set<ConstraintViolation<T>> violations = validator.validate(o, groups);
             for (ConstraintViolation<T> v : violations) {
                 if (v.getConstraintDescriptor().getAnnotation() instanceof ValidationMethod) {
                     final ImmutableList<Path.Node> nodes = ImmutableList.copyOf(v.getPropertyPath());

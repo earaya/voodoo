@@ -36,6 +36,7 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     private static final Class<?>[] DEFAULT_GROUP_ARRAY = new Class<?>[]{Default.class};
     private final ObjectMapper jacksonMapper;
     private final ValidatorFacade validatorFacade = new ValidatorFacade();
+    private final EditableValidator editableValidator = new EditableValidator();
 
     public JacksonMessageBodyProvider(com.fasterxml.jackson.databind.ObjectMapper jacksonMapper) {
         this.jacksonMapper = jacksonMapper;
@@ -74,6 +75,17 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
             if (!errors.isEmpty()) {
                 throw new InvalidEntityException("The request entity is not valid",
                         errors);
+            }
+        }
+
+        // Validate editable fields
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType() == Editable.class) {
+                final ImmutableList<String> errors = editableValidator.validate((Editable) annotation, value);
+                if (!errors.isEmpty()) {
+                    throw new InvalidEntityException("The request entity contains read-only attributes",
+                            errors);
+                }
             }
         }
 
