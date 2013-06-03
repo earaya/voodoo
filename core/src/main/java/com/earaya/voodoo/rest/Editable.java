@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface Editable {
     String [] fields() default {};
+    Class type();
 }

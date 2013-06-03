@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import javax.validation.Valid;
 import javax.validation.groups.Default;
@@ -18,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Jersey provider which enables using Jackson to parse request entities into objects and generate
@@ -78,14 +82,11 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
             }
         }
 
-        // Validate editable fields
-        for (Annotation annotation : annotations) {
-            if (annotation.annotationType() == Editable.class) {
-                final ImmutableList<String> errors = editableValidator.validate((Editable) annotation, value);
-                if (!errors.isEmpty()) {
-                    throw new InvalidEntityException("The request entity contains read-only attributes",
-                            errors);
-                }
+        Editable editableAnnotation = findEditable(annotations);
+        if (editableAnnotation != null) {
+            final List<String> errors = validatorFacade.validate(value, editableAnnotation);
+            if (!errors.isEmpty()) {
+                throw new InvalidEntityException("The request entity is not valid", errors);
             }
         }
 
@@ -98,6 +99,15 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
                 return DEFAULT_GROUP_ARRAY;
             } else if (annotation.annotationType() == Validated.class) {
                 return ((Validated) annotation).value();
+            }
+        }
+        return null;
+    }
+
+    private Editable findEditable(Annotation[] annotations) {
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType() == Editable.class) {
+                return (Editable) annotation;
             }
         }
         return null;
