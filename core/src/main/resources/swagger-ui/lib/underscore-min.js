@@ -197,9 +197,9 @@
     return b.pluck(b.map(a,function (a, b, c) {
       return{value: a, criteria: e.call(d, a, b, c)}
     }).sort(function (a, b) {
-        var c = a.criteria, d = b.criteria;
-        return c === void 0 ? 1 : d === void 0 ? -1 : c < d ? -1 : c > d ? 1 : 0
-      }), "value")
+      var c = a.criteria, d = b.criteria;
+      return c === void 0 ? 1 : d === void 0 ? -1 : c < d ? -1 : c > d ? 1 : 0
+    }), "value")
   };
   b.groupBy = function (a, c) {
     var d = {}, e = b.isFunction(c) ? c : function (a) {
@@ -557,8 +557,8 @@
       return"\\" + n[a]
     }).replace(d.escape ||
       u,function (a, b) {
-        return"'+\n_.escape(" + w(b) + ")+\n'"
-      }).replace(d.interpolate || u,function (a, b) {
+      return"'+\n_.escape(" + w(b) + ")+\n'"
+    }).replace(d.interpolate || u,function (a, b) {
         return"'+\n(" + w(b) + ")+\n'"
       }).replace(d.evaluate || u, function (a, b) {
         return"';\n" + w(b) + "\n;__p+='"

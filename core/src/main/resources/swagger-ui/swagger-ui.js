@@ -1837,7 +1837,7 @@ var Docs = {
     };
 
     return HeaderView;
-
+    ApiListing
   })(Backbone.View);
 
   MainView = (function (_super) {
@@ -2059,7 +2059,7 @@ var Docs = {
           _ref2 = this.model.parameters;
           for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
             param = _ref2[_k];
-            if ((param.paramType === 'body' || 'form') && param.name !== 'file' && (map[param.name] != null)) {
+            if (param.paramType === 'body' && param.name !== 'file') {
               bodyParam.append(param.name, map[param.name]);
             }
           }
@@ -2072,9 +2072,7 @@ var Docs = {
           _ref3 = this.model.parameters;
           for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
             param = _ref3[_l];
-            if (map[param.name] != null) {
-              bodyParam.append(param.name, map[param.name]);
-            }
+            bodyParam.append(param.name, map[param.name]);
           }
         } else {
           bodyParam = null;
@@ -2114,11 +2112,6 @@ var Docs = {
         if (paramContentTypeField) {
           obj.contentType = paramContentTypeField;
         }
-        log('content type = ' + obj.contentType);
-        if (!obj.data || (obj.type === 'GET' || obj.type === 'DELETE')) {
-          obj.contentType = false;
-        }
-        log('content type is now = ' + obj.contentType);
         responseContentTypeField = $('.content > .content-type > div > select[name=contentType]', $(this.el)).val();
         if (responseContentTypeField) {
           obj.headers = obj.headers != null ? obj.headers : {};
