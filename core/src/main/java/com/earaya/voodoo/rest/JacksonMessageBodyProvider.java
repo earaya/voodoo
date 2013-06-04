@@ -1,6 +1,7 @@
 package com.earaya.voodoo.rest;
 
 import com.earaya.voodoo.rest.exceptions.InvalidEntityException;
+import com.earaya.voodoo.rest.validation.Editable;
 import com.earaya.voodoo.rest.validation.Validated;
 import com.earaya.voodoo.rest.validation.ValidatorFacade;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -8,7 +9,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import javax.validation.Valid;
 import javax.validation.groups.Default;
@@ -19,9 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A Jersey provider which enables using Jackson to parse request entities into objects and generate
@@ -40,7 +38,6 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     private static final Class<?>[] DEFAULT_GROUP_ARRAY = new Class<?>[]{Default.class};
     private final ObjectMapper jacksonMapper;
     private final ValidatorFacade validatorFacade = new ValidatorFacade();
-    private final EditableValidator editableValidator = new EditableValidator();
 
     public JacksonMessageBodyProvider(com.fasterxml.jackson.databind.ObjectMapper jacksonMapper) {
         this.jacksonMapper = jacksonMapper;
@@ -71,7 +68,7 @@ public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
                 entityStream));
     }
 
-    private Object validate(Annotation[] annotations, Object value) {
+    Object validate(Annotation[] annotations, Object value) {
         final Class<?>[] classes = findValidationGroups(annotations);
 
         if (classes != null) {

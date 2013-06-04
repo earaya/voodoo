@@ -1,9 +1,7 @@
 package com.earaya.voodoo.rest.validation;
 
-import com.earaya.voodoo.rest.Editable;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
@@ -72,13 +70,13 @@ public class ValidatorFacade {
             if (!editableFields.contains(key.toString())) {
                 errors.add(key.toString() + " not allowed");
             } else {
-                errors.addAll(validateValue(editableAnnotation.type(), key.toString(), value.toString()));
+                errors.addAll(validateValue(editableAnnotation.type(), key.toString(), map.get(key)));
             }
         }
         return ImmutableList.copyOf(Ordering.natural().sortedCopy(errors));
     }
 
-    private <T> ImmutableList<String> validateValue(Class<T> tClass, String attribute, String value) {
+    private <T> ImmutableList<String> validateValue(Class<T> tClass, String attribute, Object value) {
         Set<ConstraintViolation<T>> violations = validator.validateValue(tClass, attribute, value);
         return ImmutableList.copyOf(Ordering.natural().sortedCopy(parse(violations)));
     }

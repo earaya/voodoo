@@ -1,4 +1,4 @@
-package com.earaya.voodoo.rest;
+package com.earaya.voodoo.rest.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
