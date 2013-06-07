@@ -37,7 +37,7 @@ import java.net.ServerSocket;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class DefaultExceptionMapperAcceptanceTest {
+public class DefaultExceptionMapperAcceptanceTest extends VoodooFunctionalTest {
 
     int httpPort;
     VoodooApplication embeddedServer;
@@ -105,29 +105,6 @@ public class DefaultExceptionMapperAcceptanceTest {
         assertMsgAndStatus(response, 503, StubResource.SORRY_UNAVAILABLE_ERROR);
         Header retryAfter = response.getFirstHeader("Retry-After");
         assertEquals("180", retryAfter.getValue());
-    }
-
-    private void assertMsgAndStatus(HttpResponse response, int statusCode,
-                                    String msg) throws IOException {
-        assertEquals(statusCode, response.getStatusLine().getStatusCode());
-        HttpEntity entity = response.getEntity();
-        try {
-            InputStream content = entity.getContent();
-            assertEquals(msg, IOUtils.toString(content));
-        } finally {
-            EntityUtils.consume(entity);
-        }
-    }
-
-    private int findFreePort() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(0);
-        int localPort = serverSocket.getLocalPort();
-        serverSocket.close();
-        return localPort;
-    }
-
-    private String getUrl(int port, String path) {
-        return String.format("http://localhost:%d/%s", port, path);
     }
 
 }
