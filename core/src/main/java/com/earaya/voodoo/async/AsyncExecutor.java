@@ -1,24 +1,33 @@
 package com.earaya.voodoo.async;
 
+import scala.actors.threadpool.Arrays;
+
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import javax.ws.rs.WebApplicationException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class AsyncExecutor {
 
     private static final String ASYNC_RESULT_ERROR = "ASYNC_RESULT_ERROR";
     private static final String ASYNC_RESULT_SUCCESS = "ASYNC_RESULT_SUCCESS";
 
-    private static ExecutorService threadPool = new ThreadPoolExecutor(1, 100,
+    public static ExecutorService threadPool = new ThreadPoolExecutor(1, 100,
             60L, TimeUnit.SECONDS,
             new SynchronousQueue<Runnable>());
 
     public static <T> T execute(HttpServletRequest request, final UncheckedCallable<T> callable) {
+        List<T> asList = execute(request, new UncheckedCallable[] {callable});
+        if (asList != null)
+            return asList.get(0);
+        return null;
+    }
+
+    public static <T> List<T> execute(HttpServletRequest request, final UncheckedCallable<T>... callables) {
         if (!request.isAsyncSupported()) {
-            return callable.call();
+            return invokeAll(callables);
         }
         if (request.isAsyncStarted()) {
             // First check if error was thrown
@@ -27,15 +36,15 @@ public class AsyncExecutor {
                 throw exception;
             }
             // If no error thrown return the success result
-            return (T) request.getAttribute(ASYNC_RESULT_SUCCESS);
+            return (List<T>) request.getAttribute(ASYNC_RESULT_SUCCESS);
         } else {
             final AsyncContext asyncContext = request.startAsync();
             threadPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        T successResult = callable.call();
-                        asyncContext.getRequest().setAttribute(ASYNC_RESULT_SUCCESS, successResult);
+                        List<T> allResults = invokeAll(callables);
+                        asyncContext.getRequest().setAttribute(ASYNC_RESULT_SUCCESS, allResults);
                     } catch (Exception e) {
                         asyncContext.getRequest().setAttribute(ASYNC_RESULT_ERROR, e);
                     } finally {
@@ -44,6 +53,24 @@ public class AsyncExecutor {
                 }
             });
             return null;
+        }
+    }
+
+    private static <T> List<T> invokeAll(UncheckedCallable<T>... callables) {
+        try {
+            List<Future<T>> allFutures = threadPool.invokeAll(Arrays.asList(callables));
+            List<T> allResults = new ArrayList<>(allFutures.size());
+            for (Future<T> future : allFutures) {
+                allResults.add(future.get());
+            }
+            return allResults;
+        } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            } else if (e.getCause() != null && e.getCause() instanceof RuntimeException) {
+                throw (RuntimeException) e.getCause();
+            }
+            throw new WebApplicationException();
         }
     }
 

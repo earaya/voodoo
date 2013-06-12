@@ -54,4 +54,10 @@ public class AsyncExecutorTest extends VoodooFunctionalTest {
         assertEquals(401, response.getStatusLine().getStatusCode());
     }
 
+    @Test
+    public void multipleJobsTest() throws Exception {
+        HttpGet httpGet = new HttpGet(getUrl(httpPort, "async/multiple/5"));
+        HttpResponse response = httpClient.execute(httpGet);
+        assertMsgAndStatus(response, 200, "[success, success, success, success, success]");
+    }
 }

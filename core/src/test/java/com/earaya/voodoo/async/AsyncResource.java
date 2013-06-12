@@ -7,6 +7,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.xml.ws.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("async")
 public class AsyncResource {
@@ -36,4 +38,30 @@ public class AsyncResource {
         });
     }
 
+    @GET
+    @Path("multiple/{count}")
+    public String multiple(@PathParam("count") final int count) {
+        List<StringCallable> callables = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            callables.add(new StringCallable("success"));
+        }
+        List<String> allStrings = AsyncExecutor.execute(request, callables.toArray(new StringCallable[callables.size()]));
+        if (allStrings != null)
+            return allStrings.toString();
+
+        return null;
+    }
+
+    private static class StringCallable implements UncheckedCallable<String> {
+        private String result;
+
+        public StringCallable(String result) {
+            this.result = result;
+        }
+
+        @Override
+        public String call() {
+            return result;
+        }
+    }
 }
