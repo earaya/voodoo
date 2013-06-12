@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.xml.ws.Response;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +50,21 @@ public class AsyncResource {
             return allStrings.toString();
 
         return null;
+    }
+
+    @GET
+    @Path("checkThreadIds")
+    public Response getResponse() {
+        final Long requestId = Thread.currentThread().getId();
+        return AsyncExecutor.execute(request, new UncheckedCallable<Response>() {
+            @Override
+            public Response call() {
+                if (Thread.currentThread().getId() == requestId) {
+                    throw new WebApplicationException();
+                }
+                return Response.ok().build();
+            }
+        });
     }
 
     private static class StringCallable implements UncheckedCallable<String> {

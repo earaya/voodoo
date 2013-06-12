@@ -55,6 +55,13 @@ public class AsyncExecutorTest extends VoodooFunctionalTest {
     }
 
     @Test
+    public void differentThreadTest() throws Exception {
+        HttpGet httpGet = new HttpGet(getUrl(httpPort, "async/checkThreadIds"));
+        HttpResponse response = httpClient.execute(httpGet);
+        assertEquals(200, response.getStatusLine().getStatusCode());
+    }
+
+    @Test
     public void multipleJobsTest() throws Exception {
         HttpGet httpGet = new HttpGet(getUrl(httpPort, "async/multiple/5"));
         HttpResponse response = httpClient.execute(httpGet);
