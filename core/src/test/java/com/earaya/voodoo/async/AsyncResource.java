@@ -41,11 +41,11 @@ public class AsyncResource {
     @GET
     @Path("multiple/{count}")
     public String multiple(@PathParam("count") final int count) {
-        List<StringCallable> callables = new ArrayList<>();
+        List<UncheckedCallable<String>> callables = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             callables.add(new StringCallable("success"));
         }
-        List<String> allStrings = AsyncExecutor.execute(request, callables.toArray(new StringCallable[callables.size()]));
+        List<String> allStrings = AsyncExecutor.execute(request, callables);
         if (allStrings != null)
             return allStrings.toString();
 

@@ -25,6 +25,10 @@ public class AsyncExecutor {
         return null;
     }
 
+    public static <T> List<T> execute(HttpServletRequest request, List<UncheckedCallable<T>> callables) {
+        return execute(request, callables.toArray(new UncheckedCallable[callables.size()]));
+    }
+
     public static <T> List<T> execute(HttpServletRequest request, final UncheckedCallable<T>... callables) {
         if (!request.isAsyncSupported()) {
             return invokeAll(callables);
