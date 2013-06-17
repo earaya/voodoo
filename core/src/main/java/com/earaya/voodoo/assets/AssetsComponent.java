@@ -58,7 +58,7 @@ public abstract class AssetsComponent implements Component {
     @Override
     public ContextHandler getHandler() {
         MimeTypes mimeTypes = new MimeTypes();
-        mimeTypes.addMimeMapping("woff", "font/woff");
+        mimeTypes.addMimeMapping("woff", "application/x-font-woff");
         mimeTypes.addMimeMapping("ttf", "font/ttf");
 
         ResourceHandler resourceHandler = new ResourceHandler();
