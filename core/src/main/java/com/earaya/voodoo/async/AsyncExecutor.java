@@ -34,13 +34,7 @@ public class AsyncExecutor {
             return invokeAll(callables);
         }
         if (request.isAsyncStarted()) {
-            // First check if error was thrown
-            final RuntimeException exception = (RuntimeException) request.getAttribute(ASYNC_RESULT_ERROR);
-            if (exception != null) {
-                throw exception;
-            }
-            // If no error thrown return the success result
-            return (List<T>) request.getAttribute(ASYNC_RESULT_SUCCESS);
+            return (List<T>) getAsyncResult(request);
         } else {
             final AsyncContext asyncContext = request.startAsync();
             threadPool.execute(new Runnable() {
@@ -58,6 +52,16 @@ public class AsyncExecutor {
             });
             return null;
         }
+    }
+
+    public static Object getAsyncResult(HttpServletRequest request) {
+        // First check if error was thrown
+        final RuntimeException exception = (RuntimeException) request.getAttribute(ASYNC_RESULT_ERROR);
+        if (exception != null) {
+            throw exception;
+        }
+        // If no error thrown return the success result
+        return request.getAttribute(ASYNC_RESULT_SUCCESS);
     }
 
     private static <T> List<T> invokeAll(UncheckedCallable<T>... callables) {
