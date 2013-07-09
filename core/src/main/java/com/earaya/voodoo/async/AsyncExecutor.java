@@ -1,11 +1,10 @@
 package com.earaya.voodoo.async;
 
-import scala.actors.threadpool.Arrays;
-
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
