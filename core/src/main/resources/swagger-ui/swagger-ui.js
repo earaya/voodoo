@@ -1975,7 +1975,9 @@ var Docs = {
       _ref = this.model.parameters;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         param = _ref[_i];
-        this.addParameter(param);
+        if (param.paramAccess !== "hidden") {
+          this.addParameter(param);
+        }
       }
       _ref1 = this.model.errorResponses;
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
