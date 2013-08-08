@@ -34,6 +34,7 @@ import com.sun.jersey.spi.container.WebApplication;
 import com.sun.jersey.spi.container.servlet.WebConfig;
 import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.GzipFilter;
@@ -41,8 +42,10 @@ import org.eclipse.jetty.servlets.GzipFilter;
 import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.List;
 
 public class RestComponent implements Component {
 
@@ -52,6 +55,7 @@ public class RestComponent implements Component {
     private String rootPath = "/";
     private String version = "1";
     private Class documentationListing = DocumentationListing.class;
+    private List<FilterHolder> filters = new ArrayList<>();
 
     public RestComponent(String packageName, Module... modules) {
         resourceConfig = new PackagesResourceConfig(packageName);
@@ -92,6 +96,11 @@ public class RestComponent implements Component {
         return this;
     }
 
+    public RestComponent filter(FilterHolder filterHolder) {
+        this.filters.add(filterHolder);
+        return this;
+    }
+
     @Override
     public ContextHandler getHandler() {
         ServletContextHandler context = new ServletContextHandler();
@@ -105,6 +114,9 @@ public class RestComponent implements Component {
 
         final EnumSet<DispatcherType> dispatcherTypes = EnumSet.allOf(DispatcherType.class);
         context.addServlet(voodooServletHolder, "/*");
+        for (FilterHolder holder : filters) {
+            context.addFilter(holder, "/*", dispatcherTypes);
+        }
         context.addFilter(GuiceFilter.class, "/*", dispatcherTypes);
         context.addFilter(LoggingFilter.class, "/*", dispatcherTypes);
         context.addFilter(GzipFilter.class, "/*", dispatcherTypes);
