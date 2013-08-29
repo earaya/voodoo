@@ -36,6 +36,7 @@ public class AsyncExecutor {
             return (List<T>) getAsyncResult(request);
         } else {
             final AsyncContext asyncContext = request.startAsync();
+            asyncContext.setTimeout(60000);
             threadPool.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -63,7 +64,7 @@ public class AsyncExecutor {
         return request.getAttribute(ASYNC_RESULT_SUCCESS);
     }
 
-    private static <T> List<T> invokeAll(UncheckedCallable<T>... callables) {
+    public static <T> List<T> invokeAll(UncheckedCallable<T>... callables) {
         try {
             List<Future<T>> allFutures = threadPool.invokeAll(Arrays.asList(callables));
             List<T> allResults = new ArrayList<>(allFutures.size());
@@ -77,7 +78,7 @@ public class AsyncExecutor {
             } else if (e.getCause() != null && e.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) e.getCause();
             }
-            throw new WebApplicationException();
+            throw new WebApplicationException(e);
         }
     }
 
