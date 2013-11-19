@@ -57,10 +57,14 @@ public class RestComponent implements Component {
     private Class documentationListing = DocumentationListing.class;
     private List<FilterHolder> filters = new ArrayList<>();
 
-    public RestComponent(String packageName, Module... modules) {
+    public RestComponent(String packageName, Injector injector) {
+        this.injector = injector;
         resourceConfig = new PackagesResourceConfig(packageName);
-        injector = Guice.createInjector(modules);
         setupResourceConfig();
+    }
+
+    public RestComponent(String packageName, Module... modules) {
+        this(packageName, Guice.createInjector(modules));
     }
 
     public RestComponent(Package pkg, Module... modules) {
