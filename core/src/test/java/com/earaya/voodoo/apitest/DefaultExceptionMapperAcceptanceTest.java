@@ -16,23 +16,17 @@
 package com.earaya.voodoo.apitest;
 
 import com.earaya.voodoo.VoodooApplication;
-import com.earaya.voodoo.config.HttpServerConfig;
+import com.earaya.voodoo.config.ConnectorConfig;
+import com.earaya.voodoo.config.ServerConfig;
 import com.earaya.voodoo.rest.RestComponent;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -46,7 +40,8 @@ public class DefaultExceptionMapperAcceptanceTest extends VoodooFunctionalTest {
     @Before
     public void setUp() throws Exception {
         httpPort = findFreePort();
-        embeddedServer = new VoodooApplication(new HttpServerConfig(httpPort), new RestComponent("com.earaya.voodoo.apitest"));
+        embeddedServer = new VoodooApplication(new ServerConfig(new ConnectorConfig(httpPort)),
+                new RestComponent("com.earaya.voodoo.apitest"));
         embeddedServer.start();
     }
 

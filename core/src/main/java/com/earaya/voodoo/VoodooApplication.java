@@ -17,11 +17,12 @@
 
 package com.earaya.voodoo;
 
-import com.earaya.voodoo.config.HttpServerConfig;
+import com.earaya.voodoo.config.ConnectorConfig;
+import com.earaya.voodoo.config.ServerConfig;
 import com.wordnik.swagger.jaxrs.JaxrsApiReader;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -42,23 +43,29 @@ public class VoodooApplication {
 
     private static final transient Logger LOG = LoggerFactory.getLogger(VoodooApplication.class);
     private final Server server;
-    private final HttpServerConfig httpServerConfig;
+    private final ServerConfig serverConfig;
     private final Component[] components;
     private final ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 
-    public VoodooApplication(HttpServerConfig httpServerConfig, Component... components) {
-        this.httpServerConfig = httpServerConfig;
+    public VoodooApplication(ConnectorConfig connectorConfig, Component... components) {
+        this(new ServerConfig(connectorConfig), components);
+    }
+
+    public VoodooApplication(ServerConfig serverConfig, Component... components) {
+        this.serverConfig = serverConfig;
         this.components = components;
 
         server = new Server();
-        server.addConnector(getConnector());
+        for (ConnectorConfig connectorConfig : serverConfig.getConnectorConfigs()) {
+            server.addConnector(connectorConfig.getConnector(server));
+        }
 
         server.setHandler(handlerCollection);
     }
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public void start() throws Exception {
-        LOG.info("Starting http server on port {}", httpServerConfig.getPort());
+        //LOG.info("Starting http server on port {}", httpServerConfig.getPort());
         initComponents();
 
         try {
@@ -80,12 +87,6 @@ public class VoodooApplication {
 
     public void waitForShutdown() throws InterruptedException {
         server.join();
-    }
-
-    private ServerConnector getConnector() {
-        ServerConnector connector = new ServerConnector(server);
-        connector.setPort(httpServerConfig.getPort());
-        return connector;
     }
 
     private void initComponents() {

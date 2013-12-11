@@ -2,7 +2,8 @@ package com.earaya.voodoo.async;
 
 import com.earaya.voodoo.VoodooApplication;
 import com.earaya.voodoo.apitest.VoodooFunctionalTest;
-import com.earaya.voodoo.config.HttpServerConfig;
+import com.earaya.voodoo.config.ConnectorConfig;
+import com.earaya.voodoo.config.ServerConfig;
 import com.earaya.voodoo.rest.RestComponent;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -20,7 +21,8 @@ public class AsyncExecutorTest extends VoodooFunctionalTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         httpPort = findFreePort();
-        VoodooApplication server = new VoodooApplication(new HttpServerConfig(httpPort), new RestComponent(AsyncResource.class.getPackage()));
+        VoodooApplication server = new VoodooApplication(new ServerConfig(new ConnectorConfig(httpPort)),
+                new RestComponent(AsyncResource.class.getPackage()));
         server.start();
     }
 
