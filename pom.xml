@@ -26,7 +26,7 @@
         <jetty.version>9.0.3.v20130506</jetty.version>
         <jersey.version>1.17</jersey.version>
         <metrics.version>2.2.0</metrics.version>
-        <guava.version>14.0.1</guava.version>
+        <guava.version>18.0</guava.version>
         <guice.version>3.0</guice.version>
         <mockito.version>1.9.5</mockito.version>
 

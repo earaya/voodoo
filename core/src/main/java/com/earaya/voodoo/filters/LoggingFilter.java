@@ -57,7 +57,7 @@ public class LoggingFilter implements Filter {
             response.addHeader(X_VOODOO_RESPONSE_ID, ruid);
         }
 
-        final Stopwatch timer = new Stopwatch().start();
+        final Stopwatch timer = Stopwatch.createStarted();
         if (LOG.isInfoEnabled()) {
             LOG.info("Starting request {}", request.getRequestURI());
         }
